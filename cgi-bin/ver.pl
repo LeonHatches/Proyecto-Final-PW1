@@ -25,12 +25,11 @@ my $id = $cgi->param('id');
 
 if ($id) {
     # Configuración de conexión (adoptando configuración de `backend-pl-2`)
-    my $database = "paginas";
-    my $hostname = "mariadb2";
-    my $port     = 3307;
-    my $user     = "cgi_user";
-    my $password = "123456789";
-
+    my $database = "wikipweb1";
+    my $host     = "127.0.0.1";
+    my $port     = 3306;
+    my $user     = "root";
+    my $password = "";
     # DSN para la conexión
     my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
 
