@@ -3,11 +3,16 @@ use strict;
 use warnings;
 use DBI;
 use CGI;
+use utf8;
+use Encode;
 
 my $cgi = CGI->new;
 
-print "Content-type: text/html\n\n";
-print <<END_HTML;
+# Generar el encabezado HTTP con UTF-8
+print $cgi->header(-type => 'text/html', -charset => 'UTF-8');
+
+# HTML inicial
+print <<'HTML';
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,76 +21,85 @@ print <<END_HTML;
     <link rel="stylesheet" href="./css/Ver.css">
 </head>
 <body>
-END_HTML
+HTML
 
+# Obtener el ID desde la URL
 my $id = $cgi->param('id');
 
 if ($id) {
+    # Configuración para MariaDB
     my $database = "wikipweb1";
     my $host     = "127.0.0.1";
     my $port     = 3306;
     my $user     = "root";
     my $password = "";
 
-    my $dsn = "DBI:mysql:database=$database;host=$host;port=$port";
+    # DSN para la conexión con MariaDB
+    my $dsn = "DBI:MariaDB:database=$database;host=$host;port=$port";
 
-    my $dbh = DBI->connect($dsn, $user, $password, { PrintError => 0, RaiseError => 1 });
+    # Conectar a la base de datos
+    my $dbh = DBI->connect($dsn, $user, $password, {
+        RaiseError       => 1,
+        PrintError       => 0,
+        mariadb_enable_utf8 => 1,  # Soporte para UTF-8
+    });
 
     if ($dbh) {
-        my $sql = "SELECT titulo, contenido FROM wiki WHERE id = ?";
-        my $sth = $dbh->prepare($sql);
+        # Consultar título y contenido
+        my $sth = $dbh->prepare("SELECT titulo, contenido FROM wiki WHERE id = ?");
         $sth->execute($id);
 
         my $row = $sth->fetchrow_hashref;
-
         if ($row) {
-    my @lineas = split /\n/, $row->{contenido};
+            # Convertir el contenido de Markdown a HTML
+            my $html_content = convertir_markdown_a_html($row->{contenido});
 
-    my $codigo_bloque = 0;
-    my $codigo_vacio  = 1;
-
-    while (my $linea = shift @lineas) {
-        $linea =~ s/^# (.+)$/<h1>$1<\/h1>/;
-        $linea =~ s/^## (.+)$/<h2>$1<\/h2>/;
-        $linea =~ s/^###### (.+)$/<h6>$1<\/h6>/;
-
-        $linea =~ s/\*\*([^*]+)\*\*/<strong>$1<\/strong><br>/g;
-
-        $linea =~ s/\*([^*]+)\*/<em>$1<\/em><br>/g;
-
-        $linea =~ s/~~([^~]+)~~/<del>$1<\/del>br>/g;
-
-        if ($linea =~ /^```$/) {
-            $codigo_bloque = !$codigo_bloque;
-            print "<p><code>\n" if $codigo_bloque;
-
-            while ($linea = shift @lineas) {
-                print "$linea\n";
-            }
-
-            $codigo_vacio = 0 if $codigo_bloque;
-            print "</code></p>\n" if $codigo_bloque;
+            # Mostrar el título y el contenido convertido
+            print "<h1>" . encode_utf8($row->{titulo}) . "</h1>\n";
+            print "<div class='contenido'>\n$html_content\n</div>\n";
         } else {
-            print "$linea\n";
+            print "<p>No se encontró el registro con el ID: $id</p>\n";
         }
-    }
-
-    print "</code></p>\n" if $codigo_vacio && $codigo_bloque;
-} else {
-    print "<p>No se encontró el registro con el ID: $id</p>";
-}
-
 
         $sth->finish();
         $dbh->disconnect();
     } else {
-        die "Error al conectar a la base de datos: " . DBI->errstr;
+        print "<p>Error al conectar con la base de datos.</p>\n";
     }
 } else {
-    print "<p>ID no proporcionado.</p>";
+    print "<p>ID no proporcionado.</p>\n";
 }
 
-print <<END_HTML;
+# HTML final
+print <<'HTML';
+<a href="./index.html">Volver al inicio</a>
 </body>
 </html>
-END_HTML
+HTML
+
+# Subrutina para convertir Markdown a HTML
+sub convertir_markdown_a_html {
+    my ($markdown) = @_;
+
+    # Convertir encabezados
+    $markdown =~ s/^###### (.+)$/<h6>$1<\/h6>/gm;
+    $markdown =~ s/^## (.+)$/<h2>$1<\/h2>/gm;
+    $markdown =~ s/^# (.+)$/<h1>$1<\/h1>/gm;
+
+    # Convertir negrita, cursiva y tachado
+    $markdown =~ s/\*\*\*(.+?)\*\*\*/<strong><em>$1<\/em><\/strong>/g;
+    $markdown =~ s/\*\*(.+?)\*\*/<strong>$1<\/strong>/g;
+    $markdown =~ s/\*(.+?)\*/<em>$1<\/em>/g;
+    $markdown =~ s/~~(.+?)~~/<del>$1<\/del>/g;
+
+    # Convertir bloques de código
+    $markdown =~ s/```(.+?)```/<pre><code>$1<\/code><\/pre>/gs;
+
+    # Convertir enlaces
+    $markdown =~ s/\[(.+?)\]\((.+?)\)/<a href="$2">$1<\/a>/g;
+
+    # Reemplazar saltos de línea con <br>
+    $markdown =~ s/\n/<br>\n/g;
+
+    return encode_utf8($markdown);
+}
