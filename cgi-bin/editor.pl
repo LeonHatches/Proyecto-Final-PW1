@@ -10,11 +10,11 @@ use utf8;
 use Encode;
 
 #Configuración de conexión
-my $database = "paginas";
-my $hostname = "mariadb2";
-my $port = 3307;
-my $user = "cgi_user";
-my $password = "123456789";
+my $database = "wikipweb1";
+my $hostname = "127.0.0.1";
+my $port = 3306;
+my $user = "root";
+my $password = "";
 
 #DSN de conexión
 my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
@@ -27,11 +27,24 @@ my $ dbh = DBI->connect($dsn, $user, $password, {
 });
 
 #Consulta de lineas de la página creada
+my $query = "SELECT id FROM wiki";
+my $sth = $dbh->prepare($query);
+my$sth->execute();
+
+
+sub imprimir {
+	while (my @row = $sth->fetchrow_array)
+	{
+		print join(",",@row), "\n";
+	}
+}
+
 
 # CGI
 my $cgi = CGI->new;
 print $cgi->header('text/html');
       $cgi->charset('UTF-8');
+
 
 print<<HTML;
 <!DOCTYPE html>
@@ -54,5 +67,40 @@ print<<HTML;
 		<title>Editor</title>
 	</head>
 	
-	<body>	
+	<body>
+		<!--CABECERA-->
+		<header>
+    		<nav>
+        		<ul>
+	            	<li><a href="descripcion.html">NOSOTROS</a></li>
+	           		<li><a href="cgi-bin/listaPag.pl">LISTA</a></li>
+        		</ul>
+    		</nav>
+		</header>
+
+
+		<!--CAJA DE TITULO-->
+		<div>
+			EDITOR DE PÁGINA
+		</div>
+
+		<p>
+			Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--
+		</p>
+
+		<!--CREACION DE PAGINA-->
+		<div>
+			<!--FORMULARIO-->
+			<form action="cgi-bin/nuevo.pl" method="GET">
+			<input type="text" name="titulo" value="$titulo">
+			<input type="text" name="contenido" value="
+HTML
+
+imprimir();
+
+print<<HTML;
+			">
+			<input type="submit" value="Enviar">
+		</div>
+	</body>
 HTML
