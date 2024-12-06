@@ -1,48 +1,101 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use DBI;
 use CGI;
+use DBI;
+use utf8;
+use Encode;
 
 my $cgi = CGI->new;
-#ID DE LA PÁGINA
-my $page_id = $cgi->param('page') || 'default_page';
-#CONEXIÓN A LA BASE DE DATOS...
-my $dbh = DBI->connect()
-#consultar contenido
-my $sth = $dbh->prepare("Selecciona el contenido de las páginas donde id = ?");
-$sth->execute($page_id);
-#contenido de markdown
-my ($markdown_contenido) = $sth->fetchrow_array;
-#markdown a html
-my $html_contenido = markdown_a_html($markdown_contenido);
-print $cgi->header(-type => 'text/html');
-print <<HTML;
+print $cgi->header(-type => 'text/html', -charset => 'UTF-8');
+
+print <<'HTML';
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Visualización de Página</title>
+    <title>WikiPweb - Visualizar Página</title>
+    <link rel="stylesheet" href="../css/Ver.css">
 </head>
 <body>
-    <h1>Visualización de la página: $page_id</h1>
-    <div>$html_content</div>
-    <a href="/cgi-bin/list_pages.pl">Volver al listado</a>
+HTML
+
+#ID desde la URL
+my $id = $cgi->param('id');
+
+if ($id) {
+    # Configuración de conexión (adoptando configuración de `backend-pl-2`)
+    my $database = "paginas";
+    my $hostname = "mariadb2";
+    my $port     = 3307;
+    my $user     = "cgi_user";
+    my $password = "123456789";
+
+    # DSN para la conexión
+    my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
+
+    # Conectar a la base de datos
+    my $dbh = DBI->connect($dsn, $user, $password, {
+        RaiseError       => 1,
+        PrintError       => 0,
+        mysql_enable_utf8 => 1,
+    });
+
+    if ($dbh) {
+        # Consulta para obtener título y contenido según el ID
+        my $sth = $dbh->prepare("SELECT titulo, contenido FROM wiki WHERE id = ?");
+        $sth->execute($id);
+
+        my $row = $sth->fetchrow_hashref;
+        if ($row) {
+            #De Markdown a HTML
+            my $html_content = convertir_markdown_a_html($row->{contenido});
+
+            #Título y el contenido
+            print "<h1>" . encode_utf8($row->{titulo}) . "</h1>\n";
+            print "<div class='contenido'>\n$html_content\n</div>\n";
+        } else {
+            print "<p>No se encontró la página con ID: $id</p>\n";
+        }
+
+        $sth->finish();
+        $dbh->disconnect();
+    } else {
+        print "<p>Error al conectar con la base de datos.</p>\n";
+    }
+} else {
+    print "<p>No se proporcionó un ID válido.</p>\n";
+}
+
+print <<'HTML';
+<a href="../index.html">Volver al inicio</a>
 </body>
 </html>
 HTML
-sub markdown_a_html{
+
+#Markdown a HTML
+sub convertir_markdown_a_html {
     my ($markdown) = @_;
-        $markdown =~ s/^###### (.*?)$/<h6>$1<\/h6>/gm;  # Encabezado H6
-        $markdown =~ s/^##### (.*?)$/<h5>$1<\/h5>/gm;  # Encabezado H5
-        $markdown =~ s/^#### (.*?)$/<h4>$1<\/h4>/gm;  # Encabezado H4
-        $markdown =~ s/^### (.*?)$/<h3>$1<\/h3>/gm;  # Encabezado H3
-        $markdown =~ s/^## (.*?)$/<h2>$1<\/h2>/gm;  # Encabezado H2
-        $markdown =~ s/^# (.*?)$/<h1>$1<\/h1>/gm;   # Encabezado H1
-        $markdown =~ s/\*\*(.*?)\*\*/<b>$1<\/b>/g;  # Texto en negrita
-        $markdown =~ s/\*(.*?)\*/<i>$1<\/i>/g;      # Texto en cursiva
-        $markdown =~ s/~~(.*?)~~/<del>$1<\/del>/g;  # Texto tachado
-        $markdown =~ s/\[(.*?)\]\((.*?)\)/<a href="$2">$1<\/a>/g;  # Hipervínculos
-        $markdown =~ s/`(.*?)`/<code>$1<\/code>/g;  # Código en línea
-    return $markdown;
+
+    #Encabezados
+    $markdown =~ s/^###### (.+)$/<h6>$1<\/h6>/gm;
+    $markdown =~ s/^## (.+)$/<h2>$1<\/h2>/gm;
+    $markdown =~ s/^# (.+)$/<h1>$1<\/h1>/gm;
+
+    #En negrita, cursiva y tachado
+    $markdown =~ s/\*\*\*(.+?)\*\*\*/<strong><em>$1<\/em><\/strong>/g;
+    $markdown =~ s/\*\*(.+?)\*\*/<strong>$1<\/strong>/g;
+    $markdown =~ s/\*(.+?)\*/<em>$1<\/em>/g;
+    $markdown =~ s/~~(.+?)~~/<del>$1<\/del>/g;
+
+    #Bloques de código
+    $markdown =~ s/```(.+?)```/<pre><code>$1<\/code><\/pre>/gs;
+
+    # Reemplazar enlaces
+    $markdown =~ s/\[(.+?)\]\((.+?)\)/<a href="$2">$1<\/a>/g;
+
+    # Reemplazar saltos de línea
+    $markdown =~ s/\n/<br>\n/g;
+
+    return encode_utf8($markdown);
 }
