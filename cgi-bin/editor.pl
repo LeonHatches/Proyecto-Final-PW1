@@ -9,6 +9,13 @@ use DBI;
 use utf8;
 use Encode;
 
+# CGI
+my $cgi = CGI->new;
+print $cgi->header('text/html');
+      $cgi->charset('UTF-8');
+
+my $id = $cgi->param('id');
+
 #Configuración de conexión
 my $database = "wikipweb1";
 my $hostname = "127.0.0.1";
@@ -27,23 +34,23 @@ my $ dbh = DBI->connect($dsn, $user, $password, {
 });
 
 #Consulta de lineas de la página creada
-my $query = "SELECT id FROM wiki";
+my $query = "SELECT titulo, texto FROM wiki WHERE id = ?";
 my $sth = $dbh->prepare($query);
-my$sth->execute();
+my $sth->execute();
 
 
 sub imprimir {
-	while (my @row = $sth->fetchrow_array)
-	{
-		print join(",",@row), "\n";
+
+	if (my @row = $sth->fetchrow_array) {
+		my ($titulo, $texto) = @row;
 	}
+	else {
+		my ($titulo, $texto) = {"No se encontró un titulo.", "No se encontró un texto."};
+	}
+
+	print <input type="text" name="titulo" value="$titulo">
+	print <input type="text" name="contenido" value="$texto">;
 }
-
-
-# CGI
-my $cgi = CGI->new;
-print $cgi->header('text/html');
-      $cgi->charset('UTF-8');
 
 
 print<<HTML;
@@ -92,14 +99,11 @@ print<<HTML;
 		<div>
 			<!--FORMULARIO-->
 			<form action="cgi-bin/nuevo.pl" method="GET">
-			<input type="text" name="titulo" value="$titulo">
-			<input type="text" name="contenido" value="
 HTML
 
 imprimir();
 
 print<<HTML;
-			">
 			<input type="submit" value="Enviar">
 		</div>
 	</body>
