@@ -29,10 +29,10 @@ my $id = $cgi->param('id');
 if ($id) {
     # Configuración para MariaDB
     my $database = "wikipweb1";
-    my $host     = "127.0.0.1";
+    my $host     = "192.168.1.13";
     my $port     = 3306;
-    my $user     = "root";
-    my $password = "";
+    my $user     = "pweb";
+    my $password = "pweb1";
 
     # DSN para la conexión con MariaDB
     my $dsn = "DBI:MariaDB:database=$database;host=$host;port=$port";
