@@ -134,10 +134,14 @@
 				<div>
 					
 					<!--FORMULARIO-->
-					<form action="cgi-bin/nuevo.pl" method="GET">
-						<input type="text" name="titulo">
-						<input type="text" name="contenido">
-						<input type="submit" value="Enviar">
+					<form action="cgi-bin/nuevo.pl" method="GET" class="formulario-estilizado">
+							<label for="titulo">Título:</label>
+							<input type="text" id="titulo" name="titulo" placeholder="Ingrese el título aquí">
+
+							<label for="contenido">Contenido:</label>
+							<textarea id="contenido" name="contenido" placeholder="Escriba el contenido aquí"></textarea>
+
+							<input type="submit" value="Enviar" class="btn-accion btn-crear">
 					</form>
 					
 				</div>
