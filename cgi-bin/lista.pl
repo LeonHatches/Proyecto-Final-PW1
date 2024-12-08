@@ -33,7 +33,7 @@ print<<HTML;
             <nav>
                 <ul>
                     <li><a href="index.html">INICIO</a></li>
-                    <li><a href="cgi-bin/nuevo.html">NUEVO</a></li>
+                    <li><a href="nuevo.html">NUEVO</a></li>
                 </ul>
             </nav>
         </header>

@@ -57,7 +57,7 @@ print<<HTML;
     		<nav>
         		<ul>
         			<li><a href="index.html">INICIO</a></li>
-        			<li><a href="cgi-bin/lista.pl">LISTA</a></li>
+        			<li><a href="./lista.pl">LISTA</a></li>
         		</ul>
     		</nav>
 		</header>
@@ -101,6 +101,9 @@ if ($dbh)
 			<input type="text" name="contenido" value="$texto">
 			<input type="submit" value="Enviar">
 HTML
+
+    $sth->finish();
+    $dbh->disconnect();
 }
 
 else {
