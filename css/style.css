@@ -323,3 +323,72 @@ h1 {
     color: #333;
     font-weight: bold;
 }
+
+.formulario-estilizado {
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+/* Etiquetas de los campos */
+.formulario-estilizado label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+	
+}
+
+/* Campo de texto para el título */
+.formulario-estilizado input[type="text"] {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Área de texto para el contenido */
+.formulario-estilizado textarea {
+    width: 95%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: none; 
+    margin-bottom: 20px;
+}
+
+/* Botón enviar con estilos de btn-accion y btn-crear */
+.formulario-estilizado .btn-accion {
+    display: inline-block;
+    text-align: center;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #DD2431;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.formulario-estilizado input,
+.formulario-estilizado textarea {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+.formulario-estilizado .btn-accion:hover {
+    background-color: #C21F2B;
+}
+
