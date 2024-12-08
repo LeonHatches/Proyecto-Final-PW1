@@ -21,13 +21,17 @@ COPY ./cgi-bin/ /usr/lib/cgi-bin
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Configura MariaDB
-RUN service mysql start && \
-    mysql -e "CREATE USER 'root'@'localhost' IDENTIFIED BY '1234567890';" && \
-    mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;" && \
+RUN service mariadb start && \
+    mysql -e "CREATE USER 'root'@'%' IDENTIFIED BY '1234567890';" && \
+    mysql -e "CREATE USER 'cgi_user'@'localhost' IDENTIFIED BY '1234567890';" && \
+    mysql -e "GRANT ALL PRIVILEGES ON wikipweb1.* TO 'cgi_user'@'localhost';" && \
+    mysql -e "FLUSH PRIVILEGES" && \
+    mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;" && \
     mysql -e "FLUSH PRIVILEGES;" && \
-    mysql -u root -p '1234567890' -e "CREATE DATABASE wikipweb1;" && \
-    mysql -u root -p '1234567890' -e "USE wikipweb1; \
-        CREATE TABLE wiki (id INT AUTO_INCREMENT PRIMARY KEY, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL);"
+    mysql -u root -p'1234567890' -e "CREATE DATABASE wikipweb1;" && \
+    mysql -u root -p'1234567890' -e "USE wikipweb1; \
+        CREATE TABLE wiki (id INT AUTO_INCREMENT PRIMARY KEY, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL); \
+	INSERT INTO wiki (titulo, texto) VALUES ('EjemploConsola', '## Este es un pequeño ejemplo\n###### Prueba\nDescripcion-Descripcion-Descripcion-Descripcion');"
 
 # Ajustar permisos de MariaDB para que funcione correctamente
 RUN sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf && \
@@ -36,5 +40,5 @@ RUN sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/
 # Exponer el puerto 80 para Apache y 3306 para MariaDB
 EXPOSE 80 3306
 
-# Comando para iniciar Apache y MariaDB
-CMD service mysql start && apache2ctl -D FOREGROUND
+# Comando para iniciar Apache y MariaDB con formato JSON
+CMD ["bash", "-c", "service mariadb start && apache2ctl -D FOREGROUND"]

@@ -16,11 +16,11 @@ print $cgi->header('text/html');
 my $id = $cgi->param('id');
 
 #Configuración de conexión
-my $database = "wikipweb1";
-my $hostname = "localhost";
+my $database = 'wikipweb1';
+my $hostname = 'localhost';
 my $port = 3306;
-my $user = "root";
-my $password = 1234567890;
+my $user = 'cgi_user';
+my $password = '1234567890';
 
 #DSN de conexión
 my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
