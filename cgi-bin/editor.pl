@@ -1,6 +1,8 @@
 #!/Strawberry/perl/bin/perl.exe
 #/usr/bin/perl
 
+#Cambiar segun se use en Docker (2da linea) o prueba local
+
 # Modulos
 use strict;
 use warnings;
@@ -18,10 +20,10 @@ my $id = $cgi->param('id');
 
 #Configuración de conexión
 my $database = "wikipweb1";
-my $hostname = "127.0.0.1";
+my $hostname = "localhost";
 my $port = 3306;
 my $user = "root";
-my $password = "";
+my $password = "1234567890";
 
 #DSN de conexión
 my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
@@ -32,25 +34,6 @@ my $ dbh = DBI->connect($dsn, $user, $password, {
 	PrintError => 0,
 	mysql_enable_utf8 => 1,
 });
-
-#Consulta de lineas de la página creada
-my $query = "SELECT titulo, texto FROM wiki WHERE id = ?";
-my $sth = $dbh->prepare($query);
-my $sth->execute();
-
-
-sub imprimir {
-
-	if (my @row = $sth->fetchrow_array) {
-		my ($titulo, $texto) = @row;
-	}
-	else {
-		my ($titulo, $texto) = {"No se encontró un titulo.", "No se encontró un texto."};
-	}
-
-	print <input type="text" name="titulo" value="$titulo">
-	print <input type="text" name="contenido" value="$texto">;
-}
 
 
 print<<HTML;
@@ -96,15 +79,41 @@ print<<HTML;
 		</p>
 
 		<!--CREACION DE PAGINA-->
-		<div>
-			<!--FORMULARIO-->
-			<form action="cgi-bin/nuevo.pl" method="GET">
+		<div>	
 HTML
 
-imprimir();
+
+if ($dbh)
+{
+	print "<form action=\"cgi-bin/conexion.pl\" method=\"GET\">\n";
+	
+
+	my $query = "SELECT titulo, texto FROM wiki WHERE id = ?";
+	my $sth = $dbh->prepare($query);
+	   $sth->execute();
+	my $titulo = "No se encontró un titulo.";
+	my $texto = "No se encontró un texto.";
+
+	if (my @row = $sth->fetchrow_array) {
+		($titulo, $texto) = @row;
+	}
+	else {
+		$titulo = "No se encontró un titulo.";
+		$texto = "No se encontró un texto.";
+	}
+
+
+	print "\t\t\t<input type=\"text\" name=\"titulo\" value=\"$titulo\">\n";
+	print "\t\t\t<input type=\"text\" name=\"contenido\" value=\"$texto\">\n";
+	print "\t\t\t<input type=\"submit\" value=\"Enviar\">\n";
+}
+
+else {
+	print "No se pudo conectar a la base de datos.\n";
+}
+
 
 print<<HTML;
-			<input type="submit" value="Enviar">
 		</div>
 	</body>
 HTML
