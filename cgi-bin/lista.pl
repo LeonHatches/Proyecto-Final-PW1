@@ -32,8 +32,8 @@ print<<HTML;
         <header>
             <nav>
                 <ul>
-                    <li><a href="descripcion.html">NOSOTROS</a></li>
-                    <li><a href="cgi-bin/listaPag.pl">LISTA</a></li>
+                    <li><a href="index.html">INICIO</a></li>
+                    <li><a href="cgi-bin/nuevo.html">NUEVO</a></li>
                 </ul>
             </nav>
         </header>
@@ -44,7 +44,7 @@ print<<HTML;
             TODAS LAS PÁGINAS
         </div>
 
-        <!--LISTA - TABKA DE PAGINAS-->
+        <!--LISTA - TABLA DE PAGINAS-->
         <div>   
 HTML
 

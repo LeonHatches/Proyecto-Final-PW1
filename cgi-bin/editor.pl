@@ -6,7 +6,6 @@ use warnings;
 use CGI;
 use DBI;
 use utf8;
-use Encode;
 
 # CGI
 my $cgi = CGI->new;
@@ -14,6 +13,8 @@ print $cgi->header('text/html');
       $cgi->charset('UTF-8');
 
 my $id = $cgi->param('id');
+
+#-----------------------------------------------------------------
 
 #Configuración de conexión
 my $database = 'wikipweb1';
@@ -32,6 +33,7 @@ my $ dbh = DBI->connect($dsn, $user, $password, {
 	mysql_enable_utf8 => 1,
 });
 
+#-----------------------------------------------------------------
 
 print<<HTML;
 <!DOCTYPE html>
@@ -46,11 +48,6 @@ print<<HTML;
 		<!--CSS-->
 		<link rel = "stylesheet" type = "text/css" href = "/css/style.css">
     	
-		<!--Style-->
-		<style type="text/css">
-			body { margin: 0px 0px 100px; }
-		</style>
-
 		<title>Editor</title>
 	</head>
 	
@@ -59,8 +56,8 @@ print<<HTML;
 		<header>
     		<nav>
         		<ul>
-	            	<li><a href="descripcion.html">NOSOTROS</a></li>
-	           		<li><a href="cgi-bin/listaPag.pl">LISTA</a></li>
+        			<li><a href="index.html">INICIO</a></li>
+        			<li><a href="cgi-bin/lista.pl">LISTA</a></li>
         		</ul>
     		</nav>
 		</header>
@@ -72,7 +69,7 @@ print<<HTML;
 		</div>
 
 		<p>
-			Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--
+			Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--
 		</p>
 
 		<!--CREACION DE PAGINA-->
@@ -82,14 +79,13 @@ HTML
 
 if ($dbh)
 {
-	print "<form action=\"cgi-bin/nuevo.pl\" method=\"GET\">\n";
+	print "\t\t\t<form action=\"cgi-bin/conexion.pl\" method=\"GET\">\n";
 	
-
 	my $query = "SELECT titulo, texto FROM wiki WHERE id = ?";
 	my $sth = $dbh->prepare($query);
 	   $sth->execute($id);
-	my $titulo = "No se encontró un titulo.";
-	my $texto = "No se encontró un texto.";
+	my $titulo = "";
+	my $texto = "";
 
 	if (my $row = $sth->fetchrow_hashref) {
 		$titulo = $row->{titulo};
@@ -100,16 +96,16 @@ if ($dbh)
 		$texto = "No se encontró un texto.";
 	}
 
-
-	print "\t\t\t<input type=\"text\" name=\"titulo\" value=\"$titulo\">\n";
-	print "\t\t\t<input type=\"text\" name=\"contenido\" value=\"$texto\">\n";
-	print "\t\t\t<input type=\"submit\" value=\"Enviar\">\n";
+	print<<HTML;
+			<input type="text" name="titulo" value="$titulo">
+			<input type="text" name="contenido" value="$texto">
+			<input type="submit" value="Enviar">
+HTML
 }
 
 else {
 	print "No se pudo conectar a la base de datos.\n";
 }
-
 
 print<<HTML;
 		</div>
