@@ -23,7 +23,7 @@ my $database = "wikipweb1";
 my $hostname = "localhost";
 my $port = 3306;
 my $user = "root";
-my $password = "1234567890";
+my $password = 1234567890;
 
 #DSN de conexión
 my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
@@ -85,17 +85,18 @@ HTML
 
 if ($dbh)
 {
-	print "<form action=\"cgi-bin/conexion.pl\" method=\"GET\">\n";
+	print "<form action=\"cgi-bin/nuevo.pl\" method=\"GET\">\n";
 	
 
 	my $query = "SELECT titulo, texto FROM wiki WHERE id = ?";
 	my $sth = $dbh->prepare($query);
-	   $sth->execute();
+	   $sth->execute($id);
 	my $titulo = "No se encontró un titulo.";
 	my $texto = "No se encontró un texto.";
 
-	if (my @row = $sth->fetchrow_array) {
-		($titulo, $texto) = @row;
+	if (my $row = $sth->fetchrow_hashref) {
+		$titulo = $row->{titulo};
+		$texto  = $row->{texto};
 	}
 	else {
 		$titulo = "No se encontró un titulo.";
@@ -117,3 +118,4 @@ print<<HTML;
 		</div>
 	</body>
 HTML
+
