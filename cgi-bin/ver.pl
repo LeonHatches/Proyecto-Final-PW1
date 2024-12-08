@@ -9,29 +9,42 @@ use Encode;
 my $cgi = CGI->new;
 print $cgi->header(-type => 'text/html', -charset => 'UTF-8');
 
+# HTML inicial con estructura similar a editor.pl
 print <<'HTML';
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>WikiPweb - Visualizar Página</title>
-    <link rel="stylesheet" href="../css/Ver.css">
+    <title>Visualizar Página</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+<header>
+    <nav>
+        <ul>
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="listaPag.pl">Listado</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="contenido-left">
 HTML
 
-#ID desde la URL
+# Obtener el ID desde la URL
 my $id = $cgi->param('id');
 
 if ($id) {
-    # Configuración de conexión (adoptando configuración de `backend-pl-2`)
+    # Configuración de conexión a la base de datos
     my $database = "wikipweb1";
-    my $host     = "127.0.0.1";
+    my $hostname = "db";  # Servicio configurado en Docker
     my $port     = 3306;
     my $user     = "root";
-    my $password = "";
-    # DSN para la conexión
-    my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
+    my $password = "password";
+    my $dsn      = "DBI:mysql:database=$database;host=$hostname;port=$port";
 
     # Conectar a la base de datos
     my $dbh = DBI->connect($dsn, $user, $password, {
@@ -41,20 +54,19 @@ if ($id) {
     });
 
     if ($dbh) {
-        # Consulta para obtener título y contenido según el ID
         my $sth = $dbh->prepare("SELECT titulo, contenido FROM wiki WHERE id = ?");
         $sth->execute($id);
 
         my $row = $sth->fetchrow_hashref;
         if ($row) {
-            #De Markdown a HTML
+            # Convertir Markdown a HTML
             my $html_content = convertir_markdown_a_html($row->{contenido});
 
-            #Título y el contenido
-            print "<h1>" . encode_utf8($row->{titulo}) . "</h1>\n";
+            # Mostrar el contenido y el título
+            print "<h1 class='titulo'>" . encode_utf8($row->{titulo}) . "</h1>\n";
             print "<div class='contenido'>\n$html_content\n</div>\n";
         } else {
-            print "<p>No se encontró la página con ID: $id</p>\n";
+            print "<p>No se encontró la página con el ID: $id</p>\n";
         }
 
         $sth->finish();
@@ -63,37 +75,42 @@ if ($id) {
         print "<p>Error al conectar con la base de datos.</p>\n";
     }
 } else {
-    print "<p>No se proporcionó un ID válido.</p>\n";
+    print "<p>ID no proporcionado o inválido.</p>\n";
 }
 
+# HTML final con un enlace de regreso al listado
 print <<'HTML';
-<a href="../index.html">Volver al inicio</a>
+    </div>
+</div>
+<footer>
+    <a href="listaPag.pl" class="btn-accion btn-gris">Volver al Listado</a>
+</footer>
 </body>
 </html>
 HTML
 
-#Markdown a HTML
+# Subrutina para convertir Markdown a HTML
 sub convertir_markdown_a_html {
     my ($markdown) = @_;
 
-    #Encabezados
+    # Convertir encabezados
     $markdown =~ s/^###### (.+)$/<h6>$1<\/h6>/gm;
     $markdown =~ s/^## (.+)$/<h2>$1<\/h2>/gm;
     $markdown =~ s/^# (.+)$/<h1>$1<\/h1>/gm;
 
-    #En negrita, cursiva y tachado
+    # Convertir estilos de texto
     $markdown =~ s/\*\*\*(.+?)\*\*\*/<strong><em>$1<\/em><\/strong>/g;
     $markdown =~ s/\*\*(.+?)\*\*/<strong>$1<\/strong>/g;
     $markdown =~ s/\*(.+?)\*/<em>$1<\/em>/g;
     $markdown =~ s/~~(.+?)~~/<del>$1<\/del>/g;
 
-    #Bloques de código
+    # Convertir bloques de código
     $markdown =~ s/```(.+?)```/<pre><code>$1<\/code><\/pre>/gs;
 
-    # Reemplazar enlaces
+    # Convertir enlaces
     $markdown =~ s/\[(.+?)\]\((.+?)\)/<a href="$2">$1<\/a>/g;
 
-    # Reemplazar saltos de línea
+    # Convertir saltos de línea a <br>
     $markdown =~ s/\n/<br>\n/g;
 
     return encode_utf8($markdown);
