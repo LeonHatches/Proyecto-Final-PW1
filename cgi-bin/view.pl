@@ -1,4 +1,5 @@
-"C:/xampp/perl/bin/perl.exe"
+#!/usr/bin/perl
+
 use strict;
 use warnings;
 use DBI;
@@ -27,15 +28,15 @@ HTML
 my $id = $cgi->param('id');
 
 if ($id) {
-    # Configuración para MariaDB
+    #Configuración de conexión
     my $database = "wikipweb1";
-    my $host     = "192.168.1.13";
-    my $port     = 3306;
-    my $user     = "pweb";
-    my $password = "pweb1";
+    my $hostname = "localhost";
+    my $port = 3306;
+    my $user = "root";
+    my $password = 1234567890;
 
-    # DSN para la conexión con MariaDB
-    my $dsn = "DBI:MariaDB:database=$database;host=$host;port=$port";
+    #DSN de conexión
+    my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
 
     # Conectar a la base de datos
     my $dbh = DBI->connect($dsn, $user, $password, {
@@ -45,18 +46,18 @@ if ($id) {
     });
 
     if ($dbh) {
-        # Consultar título y contenido
-        my $sth = $dbh->prepare("SELECT titulo, contenido FROM wiki WHERE id = ?");
+        # Consultar título y texto
+        my $sth = $dbh->prepare("SELECT titulo, texto FROM wiki WHERE id = ?");
         $sth->execute($id);
 
         my $row = $sth->fetchrow_hashref;
         if ($row) {
-            # Convertir el contenido de Markdown a HTML
-            my $html_content = convertir_markdown_a_html($row->{contenido});
+            # Convertir el texto de Markdown a HTML
+            my $html_content = convertir_markdown_a_html($row->{texto});
 
-            # Mostrar el título y el contenido convertido
+            # Mostrar el título y el texto convertido
             print "<h1>" . encode_utf8($row->{titulo}) . "</h1>\n";
-            print "<div class='contenido'>\n$html_content\n</div>\n";
+            print "<div class='texto'>\n$html_content\n</div>\n";
         } else {
             print "<p>No se encontró el registro con el ID: $id</p>\n";
         }

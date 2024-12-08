@@ -1,5 +1,5 @@
-
 #!/usr/bin/perl
+
 use strict;
 use warnings;
 use DBI;
@@ -20,14 +20,15 @@ print <<END_HTML;
 <a  id="btn-agg" href='agregar.pl'><button >Agregar Nuevo</button></a>
 END_HTML
 
-# Configuración de la base de datos MariaDB
+#Configuración de conexión
 my $database = "wikipweb1";
-my $host     = "192.168.1.13";
-my $port     = 3306;
-my $user     = "pweb"; 
-my $password = "pweb1";    
+my $hostname = "localhost";
+my $port = 3306;
+my $user = "root";
+my $password = 1234567890;
 
-my $dsn = "DBI:MariaDB:database=$database;host=$host;port=$port";
+#DSN de conexión
+my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
 
 my $dbh = DBI->connect(
     $dsn, 

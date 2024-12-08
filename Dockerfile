@@ -22,11 +22,11 @@ COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Configura MariaDB
 RUN service mysql start && \
-    mysql -e "CREATE USER 'root'@'%' IDENTIFIED BY '1234567890';" && \
-    mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;" && \
+    mysql -e "CREATE USER 'root'@'localhost' IDENTIFIED BY '1234567890';" && \
+    mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;" && \
     mysql -e "FLUSH PRIVILEGES;" && \
-    mysql -u root -p'1234567890' -e "CREATE DATABASE wikipweb1;" && \
-    mysql -u root -p'1234567890' -e "USE wikipweb1; \
+    mysql -u root -p '1234567890' -e "CREATE DATABASE wikipweb1;" && \
+    mysql -u root -p '1234567890' -e "USE wikipweb1; \
         CREATE TABLE wiki (id INT AUTO_INCREMENT PRIMARY KEY, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL);"
 
 # Ajustar permisos de MariaDB para que funcione correctamente

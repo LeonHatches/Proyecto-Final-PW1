@@ -1,7 +1,4 @@
-#!/Strawberry/perl/bin/perl.exe
-#/usr/bin/perl
-
-#Cambiar segun se use en Docker (2da linea) o prueba local
+#!/usr/bin/perl
 
 # Modulos
 use strict;

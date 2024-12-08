@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+
 use strict;
 use warnings;
 use CGI;
@@ -31,20 +32,22 @@ print <<'HTML';
 </header>
 
 <div class="container">
-    <div class="contenido-left">
+    <div class="texto-left">
 HTML
 
 # Obtener el ID desde la URL
 my $id = $cgi->param('id');
 
 if ($id) {
-    # Configuración de conexión a la base de datos
+    #Configuración de conexión
     my $database = "wikipweb1";
-    my $hostname = "db";  # Servicio configurado en Docker
-    my $port     = 3306;
-    my $user     = "root";
-    my $password = "password";
-    my $dsn      = "DBI:mysql:database=$database;host=$hostname;port=$port";
+    my $hostname = "localhost";
+    my $port = 3306;
+    my $user = "root";
+    my $password = 1234567890;
+
+    #DSN de conexión
+    my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
 
     # Conectar a la base de datos
     my $dbh = DBI->connect($dsn, $user, $password, {
@@ -54,17 +57,17 @@ if ($id) {
     });
 
     if ($dbh) {
-        my $sth = $dbh->prepare("SELECT titulo, contenido FROM wiki WHERE id = ?");
+        my $sth = $dbh->prepare("SELECT titulo, texto FROM wiki WHERE id = ?");
         $sth->execute($id);
 
         my $row = $sth->fetchrow_hashref;
         if ($row) {
             # Convertir Markdown a HTML
-            my $html_content = convertir_markdown_a_html($row->{contenido});
+            my $html_content = convertir_markdown_a_html($row->{texto});
 
-            # Mostrar el contenido y el título
+            # Mostrar el texto y el título
             print "<h1 class='titulo'>" . encode_utf8($row->{titulo}) . "</h1>\n";
-            print "<div class='contenido'>\n$html_content\n</div>\n";
+            print "<div class='texto'>\n$html_content\n</div>\n";
         } else {
             print "<p>No se encontró la página con el ID: $id</p>\n";
         }
