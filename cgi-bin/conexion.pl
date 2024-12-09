@@ -61,8 +61,8 @@ print<<HTML;
         <header>
             <nav>
                 <ul>
-                    <li><a href="index.html">INICIO</a></li>
-                    <li><a href="./lista.pl">LISTA</a></li>
+                    <li><a href="/index.html">INICIO</a></li>
+                    <li><a href="lista.pl">LISTA</a></li>
                 </ul>
             </nav>
         </header>
@@ -112,7 +112,7 @@ if ($dbh) {
 
 print<<HTML;
             <a href="lista.pl">Volver a Lista</a>
-            <a href="index.html">Volver al Inicio</a>
+            <a href="/index.html">Volver al Inicio</a>
         </div>
     </body>
 </html>

@@ -1,4 +1,4 @@
- #!/usr/bin/perl
+#!/usr/bin/perl
 
 use strict;
 use warnings;
@@ -7,11 +7,12 @@ use DBI;
 use utf8;
 use Encode;
 
+# CGI
 my $cgi = CGI->new;
 print $cgi->header(-type => 'text/html', -charset => 'UTF-8');
 
 # HTML inicial con estructura similar a editor.pl
-print <<'HTML';
+print <<HTML;
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,14 +20,14 @@ print <<'HTML';
     <title>Visualizar Página</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <header>
     <nav>
         <ul>
-            <li><a href="../index.html">Inicio</a></li>
-            <li><a href="listaPag.pl">Listado</a></li>
+            <li><a href="/index.html">Inicio</a></li>
+            <li><a href="lista.pl">Listado</a></li>
         </ul>
     </nav>
 </header>
@@ -39,22 +40,27 @@ HTML
 my $id = $cgi->param('id');
 
 if ($id) {
-    #Configuración de conexión
-    my $database = 'wikipweb1';
-    my $hostname = 'localhost';
-    my $port = 3306;
-    my $user = 'cgi_user';
-    my $password = '1234567890';
 
-    #DSN de conexión
-    my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
+        #-----------------------------------------------------------------
 
-    # Conectar a la base de datos
-    my $dbh = DBI->connect($dsn, $user, $password, {
-        RaiseError       => 1,
-        PrintError       => 0,
-        mysql_enable_utf8 => 1,
-    });
+        #Configuración de conexión
+        my $database = 'wikipweb1';
+        my $hostname = 'localhost';
+        my $port = 3306;
+        my $user = 'cgi_user';
+        my $password = '1234567890';
+
+        #DSN de conexión
+        my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
+
+        #Conexión a la DB
+        my $ dbh = DBI->connect($dsn, $user, $password, {
+            RaiseError => 1,
+            PrintError => 0,
+            mysql_enable_utf8 => 1,
+        });
+
+        #-----------------------------------------------------------------
 
     if ($dbh) {
         my $sth = $dbh->prepare("SELECT titulo, texto FROM wiki WHERE id = ?");
@@ -86,7 +92,7 @@ print <<'HTML';
     </div>
 </div>
 <footer>
-    <a href="listaPag.pl" class="btn-accion btn-gris">Volver al Listado</a>
+    <a href="lista.pl" class="btn-accion btn-gris">Volver al Listado</a>
 </footer>
 </body>
 </html>
@@ -118,3 +124,4 @@ sub convertir_markdown_a_html {
 
     return encode_utf8($markdown);
 }
+

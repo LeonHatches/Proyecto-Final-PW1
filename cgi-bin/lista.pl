@@ -32,8 +32,8 @@ print<<HTML;
         <header>
             <nav>
                 <ul>
-                    <li><a href="index.html">INICIO</a></li>
-                    <li><a href="nuevo.html">NUEVO</a></li>
+                    <li><a href="/index.html">INICIO</a></li>
+                    <li><a href="/nuevo.html">NUEVO</a></li>
                 </ul>
             </nav>
         </header>
@@ -115,7 +115,7 @@ HTML
 
 print<<HTML;
 
-            <a href='nuevo.html'><button>Nueva página</button></a>
+            <a href='/nuevo.html'><button>Nueva página</button></a>
         </div>
     </body>
 </html>
