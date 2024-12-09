@@ -114,8 +114,10 @@ HTML
 }
 
 print<<HTML;
-            <a id="nuevo" href='nuevo.html'><button>Nueva página</button></a>
+
+            <a href='nuevo.html'><button>Nueva página</button></a>
         </div>
     </body>
 </html>
+
 HTML
