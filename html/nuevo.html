@@ -30,7 +30,7 @@
 		  <nav>
 			<ul>
 			  <li><a href="#integrantes">Nosotros</a></li>
-			  <li><a href="cgi-bin/listaPag.pl">Ver lista</a></li>
+			  <li><a href="cgi-bin/lista.pl">Ver lista</a></li>
 			</ul>
 		  </nav>
 		</header>
@@ -130,16 +130,17 @@
 			<div id="crear-pagina" class="contenedor-nuevapagina">
 						<h2>CREANDO NUEVA <span class="textos-rojos">PÁGINA</span></h2>
 			
-				<!--CREACION DE PAGINA-->
+				<!--NUEVO FORM-->
 				<div>
 					
 					<!--FORMULARIO-->
-					<form action="cgi-bin/nuevo.pl" method="GET" class="formulario-estilizado">
+					<form action="cgi-bin/conexion.pl" method="GET" class="formulario-estilizado">
+							<input type="hidden" name="direccion" value="nuevo">
 							<label for="titulo">Título:</label>
 							<input type="text" id="titulo" name="titulo" placeholder="Ingrese el título aquí">
 
-							<label for="contenido">Contenido:</label>
-							<textarea id="contenido" name="contenido" placeholder="Escriba el contenido aquí"></textarea>
+							<label for="texto">Contenido:</label>
+							<textarea id="texto" name="texto" placeholder="Escriba el contenido aquí"></textarea>
 
 							<input type="submit" value="Enviar" class="btn-accion btn-crear">
 					</form>
