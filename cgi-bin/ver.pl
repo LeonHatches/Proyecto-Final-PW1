@@ -89,7 +89,7 @@ print <<'HTML';
 </html>
 HTML
 
-# Subrutina para convertir Markdown a HTML
+# Subrutina para convertir Markdown a HTML con soporte para subíndices
 sub convertir_markdown_a_html {
     my ($markdown) = @_;
 
@@ -109,6 +109,9 @@ sub convertir_markdown_a_html {
 
     # Convertir enlaces
     $markdown =~ s/\[(.+?)\]\((.+?)\)/<a href="$2">$1<\/a>/g;
+
+    # Convertir subíndices (usando `~texto~` como marcador)
+    $markdown =~ s/~(.+?)~/<sub>$1<\/sub>/g;
 
     # Convertir saltos de línea a <br>
     $markdown =~ s/\n/<br>\n/g;
