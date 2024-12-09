@@ -1,0 +1,394 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+	font-family: 'Montserrat', sans-serif;
+	background-color: #f4f4f4;
+	color: #333; /* Gris oscuro */
+	line-height: 1.6;
+	text-align: center;
+	padding: 20px;
+	font-size: 16px;
+}
+
+/* Márgenes laterales en contenedores */
+.container {
+  max-width: 1400px; /* Ancho máximo */
+  margin: 0 auto;
+  padding: 0 20px; /* Espaciado a los lados */
+}
+
+/* Cabecera */
+header {
+  background-color: #FFFFFF;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 60px 10px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header .logo {
+  font-size: 25px;
+  font-weight: 800;
+  color: #DD2431;
+  text-decoration: none;
+}
+
+header nav ul {
+  list-style: none;
+  display: flex;
+}
+
+header nav ul li {
+  margin: 0 30px; /* Separación entre las opciones */
+}
+
+header nav ul li a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+header nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Caja de bienvenida */
+.bienvenida {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1280px;
+  background-color: white;
+  padding: 60px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.texto-izquierda {
+  	max-width: 600px;
+  	text-align: left;
+	margin-top: -20px;
+}
+
+.imagen-derecha {
+  max-width: 1100px;
+}
+
+h1 {
+  font-size: 55px;
+  font-weight: 700;
+  margin-bottom: 0px;
+  color: #333;
+  line-height: 1.2;
+}
+.texto-bienvenida {
+  font-size: 20px;
+  margin-bottom: 40px;
+  color: #333;
+}
+.bienvenido {
+  color: #333;
+}
+.textos-rojos {
+  color: #DD2431;
+}
+.botones {
+  display: flex;
+  gap: 15px;
+}
+.botones a {
+  text-decoration: none;
+  padding: 12px 30px;
+  font-weight: 600;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: center;
+  width: auto;
+}
+
+/* Estilos de los botones */
+.btn-crear {
+  background-color: #DD2431;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+.btn-crear:hover {
+  background-color: #C21F2B;
+}
+.btn-gris {
+  background-color: #333;
+  color: white;
+}
+.btn-gris:hover {
+  background-color: #1D1D1D;
+}
+
+/* Estilos para la imagen */
+.imagen-index {
+  width: 80%;
+  height: auto;
+}
+
+.imagen-markdown {
+  	width: 90%;
+  	height: auto;
+}
+.bienvenida {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Secciones descriptivas */
+.descripcion, .descripcion-pagina {
+  display: flex;
+  justify-content: space-between;
+  margin: 50px 0;
+  padding: 60px; /* Espaciado interno */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.descripcion .contenido-left, .descripcion-pagina .contenido-left {
+  width: 50%;
+  text-align: left;
+}
+.justificar-texto {
+  text-align: justify;
+}
+.descripcion h2 {
+  color: #333;
+  font-weight: bold;
+  font-size: 25px;
+}
+.descripcion .contenido-right, .descripcion-pagina .contenido-right {
+  width: 45%;
+  text-align: right;
+}
+.imagen-curso, .imagen-pagina {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+/* Estilo para los integrantes */
+.integrantes {
+  margin: 40px auto;
+  text-align: center;
+  padding: 60px;
+  padding-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.integrantes h2 {
+  color: #333;
+  font-weight: bold;
+  font-size: 35px;
+}
+.integrantes h3 {
+  font-weight: 20;
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+.linea {
+  border: none;
+  border-top: 3px solid #DD2431;
+  margin: 20px auto;
+  width: 5%;
+  margin-bottom: 50px;
+}
+.integrantes ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  gap: 60px;
+}
+
+/* Para cada integrante */
+.integrantes li {
+  display: inline-block;
+  text-align: center;
+  margin: 0 10px;
+}
+
+/* Contenedor de cada integrante */
+.integrante {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 180px; /* Tamaño máximo para el avatar y el nombre */
+}
+/* Imagen del avatar */
+.avatar {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+/* Texto debajo de la imagen */
+.integrante p {
+  font-size: 15px;
+  color: #333;
+  margin: 0;
+  text-align: center;
+}
+
+/*Resaltando nombres*/
+.integrante p strong {
+  font-weight: bold;
+  font-size: 18px;
+  color: #DD2431;
+}
+
+.descripcion-pagina h2 {
+  color: #333;
+  font-weight: bold;
+  font-size: 35px;
+}
+
+.descripcion-pagina p {
+  margin-bottom: 40px;
+}
+
+.contenedor-nuevapagina {
+	margin: 40px auto;
+	text-align: center;
+	padding: 60px;
+	padding-top: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor general para la tabla */
+.tabla-markdown-container {
+	width: 100%;
+  	max-width: 1280px;
+  	background-color: white;
+  	padding: 60px;
+    margin: 40px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Estilos para las tablas */
+.tabla-markdown {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-size: 16px;
+}
+
+/* Cabecera de la tabla */
+.tabla-markdown th {
+	text-align: center;
+    background-color: #DD2431;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid #ddd;
+}
+
+/* Celdas de la tabla */
+.tabla-markdown td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    color: #333;
+	line-height: 3;
+}
+
+/* Títulos dentro de la tabla */
+.tabla-markdown-container h2 {
+    font-size: 26px;
+    margin-bottom: -10px;
+	margin-top: 15px;
+    color: #333;
+    font-weight: bold;
+}
+
+.titulo-funcionalidad h2 {
+    font-size: 35px;
+    margin-bottom: 20px;
+	margin-top: -20px;
+    color: #333;
+    font-weight: bold;
+}
+
+.formulario-estilizado {
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+/* Etiquetas de los campos */
+.formulario-estilizado label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+	
+}
+
+/* Campo de texto para el título */
+.formulario-estilizado input[type="text"] {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Área de texto para el contenido */
+.formulario-estilizado textarea {
+    width: 95%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: none; 
+    margin-bottom: 20px;
+}
+
+/* Botón enviar con estilos de btn-accion y btn-crear */
+.formulario-estilizado .btn-accion {
+    display: inline-block;
+    text-align: center;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #DD2431;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.formulario-estilizado input,
+.formulario-estilizado textarea {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+.formulario-estilizado .btn-accion:hover {
+    background-color: #C21F2B;
+}
+
