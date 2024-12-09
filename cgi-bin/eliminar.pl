@@ -38,7 +38,16 @@ my $ dbh = DBI->connect($dsn, $user, $password, {
 print<<HTML;
 <!DOCTYPE html>
 <html>
+
     <head>
+        <!--Extensión para caracteres especiales-->
+        <meta charset="utf-8">
+
+        <!--fuente de letra-->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+              rel="stylesheet"
+              type="text/css">
+
         <!--fuente de letra-->
         <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
@@ -47,29 +56,28 @@ print<<HTML;
 
         <!--CSS-->
         <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
-        
-        <title>Eliminar</title>
+
+        <title>CONEXIÓN</title>
     </head>
     
     <body>
+
         <!--CABECERA-->
-        <header>
-            <nav>
-                <ul>
-                    <li><a href="/index.html">INICIO</a></li>
-                    <li><a href="lista.pl">LISTA</a></li>
-                </ul>
-            </nav>
+        
+        <header> <a class="logo" href="/index.html">Wikipedia</a>
+          <nav>
+            <ul>
+              <li><a href="/index.html">Inicio</a></li>
+              <li><a href="lista.pl">Ver lista</a></li>
+            </ul>
+          </nav>
         </header>
 
-
-        <!--CAJA DE TITULO-->
-        <div>
-            ELIMINAR PAGINA
-        </div>
-
-        <!--CREACION DE PAGINA-->
-        <div>   
+        <!--CONTENEDOR NUEVA PÁGINA-->
+        <div class="container">
+            <div id="crear-pagina" class="contenedor-nuevapagina"
+                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
+                <h2>ELIMINANDO LA <span class="textos-rojos">PÁGINA</span></h2>   
 HTML
 
 
@@ -84,9 +92,9 @@ if ($id) {
         my $delete = $sth->execute($id);
 
         if ($delete) {
-            print "\t    <p>Página con ID $id eliminada correctamente.</p>\n";
+            print "\t    <p>Página eliminada correctamente.</p>\n";
         } else {
-            print "\t    <p>Error al intentar eliminar la página con ID $id.</p>\n";
+            print "\t    <p>Error al intentar eliminar la página.</p>\n";
         }
 
         $dbh->disconnect();
@@ -96,11 +104,13 @@ if ($id) {
     }
 
 } else {
-    print "\t    <p>ID no proporcionado o inválido.</p>\n";
+    print "\t    <p>Página no proporcionada o inválida.</p>\n";
 }
 
 print<<HTML;
-            <a href="lista.pl">Volver a Lista</a>
+                <a href="lista.pl" class="conexion-ref">Volver a Lista</a>  -  
+                <a href="/index.html" class="conexion-ref">Volver al Inicio</a>
+            </div>
         </div>
     </body>
 </html>
