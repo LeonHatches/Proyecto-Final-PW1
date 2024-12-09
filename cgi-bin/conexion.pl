@@ -90,10 +90,10 @@ if ($dbh) {
         print "<p>El contenido fue agregado con éxito</p>";
     
     } elsif ($direccion eq 'editor') {
-
-        $consulta = "UPDATE wiki SET titulo = ?, texto = ? WHERE id = ?";
+        
         my $id = $cgi->param('id');
-
+        $consulta = "UPDATE wiki SET titulo = ?, texto = ? WHERE id = ?";
+        
         $sth = $dbh->prepare($consulta);
         $sth->execute($titulo, $texto, $id);
 
@@ -117,3 +117,4 @@ print<<HTML;
     </body>
 </html>
 HTML
+

@@ -69,17 +69,17 @@ print<<HTML;
 		</div>
 
 		<p>
-			Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--Funcionalidades-agregar-tabla--
+			Funcionalidades-agregar-tabla
 		</p>
 
-		<!--CREACION DE PAGINA-->
+		<!--EDITOR DE PAGINA-->
 		<div>	
 HTML
 
 
 if ($dbh)
 {
-	print "\t\t\t<form action=\"cgi-bin/conexion.pl\" method=\"GET\">\n";
+	print "\t\t\t<form action=\"./conexion.pl\" method=\"GET\">\n";
 	
 	my $query = "SELECT titulo, texto FROM wiki WHERE id = ?";
 	my $sth = $dbh->prepare($query);
@@ -97,9 +97,12 @@ if ($dbh)
 	}
 
 	print<<HTML;
+			<input type="hidden" name="direccion" value="editor">
 			<input type="text" name="titulo" value="$titulo">
-			<input type="text" name="contenido" value="$texto">
+			<input type="text" name="texto" value="$texto">
+			<input type="hidden" name='id' value='$id'>
 			<input type="submit" value="Enviar">
+			
 HTML
 
     $sth->finish();
