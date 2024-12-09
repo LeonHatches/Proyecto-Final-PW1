@@ -3,13 +3,13 @@ html {
 }
 
 body {
-	font-family: 'Montserrat', sans-serif;
-	background-color: #f4f4f4;
-	color: #333; /* Gris oscuro */
-	line-height: 1.6;
-	text-align: center;
-	padding: 20px;
-	font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f4f4f4;
+  color: #333; /* Gris oscuro */
+  line-height: 1.6;
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
 }
 
 /* Márgenes laterales en contenedores */
@@ -47,13 +47,13 @@ header nav ul li {
   margin: 0 30px; /* Separación entre las opciones */
 }
 
-header nav ul li a {
+header nav ul li a, .conexion-ref {
   color: #333;
   text-decoration: none;
   font-weight: 600;
 }
 
-header nav ul li a:hover {
+header nav ul li a, .conexion-ref:hover {
   text-decoration: underline;
 }
 
@@ -69,9 +69,9 @@ header nav ul li a:hover {
 }
 
 .texto-izquierda {
-  	max-width: 600px;
-  	text-align: left;
-	margin-top: -20px;
+    max-width: 600px;
+    text-align: left;
+  margin-top: -20px;
 }
 
 .imagen-derecha {
@@ -134,8 +134,8 @@ h1 {
 }
 
 .imagen-markdown {
-  	width: 90%;
-  	height: auto;
+    width: 90%;
+    height: auto;
 }
 .bienvenida {
   border-bottom-left-radius: 10px;
@@ -258,21 +258,21 @@ h1 {
 }
 
 .contenedor-nuevapagina {
-	margin: 40px auto;
-	text-align: center;
-	padding: 60px;
-	padding-top: 20px;
-	background-color: #fff;
-	border-radius: 8px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  text-align: center;
+  padding: 60px;
+  padding-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Contenedor general para la tabla */
 .tabla-markdown-container {
-	width: 100%;
-  	max-width: 1280px;
-  	background-color: white;
-  	padding: 60px;
+  width: 100%;
+    max-width: 1280px;
+    background-color: white;
+    padding: 60px;
     margin: 40px auto;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -289,7 +289,7 @@ h1 {
 
 /* Cabecera de la tabla */
 .tabla-markdown th {
-	text-align: center;
+  text-align: center;
     background-color: #DD2431;
     color: white;
     padding: 12px;
@@ -304,14 +304,14 @@ h1 {
     border: 1px solid #ddd;
     text-align: left;
     color: #333;
-	line-height: 3;
+  line-height: 3;
 }
 
 /* Títulos dentro de la tabla */
 .tabla-markdown-container h2 {
     font-size: 26px;
     margin-bottom: -10px;
-	margin-top: 15px;
+  margin-top: 15px;
     color: #333;
     font-weight: bold;
 }
@@ -319,7 +319,7 @@ h1 {
 .titulo-funcionalidad h2 {
     font-size: 35px;
     margin-bottom: 20px;
-	margin-top: -20px;
+  margin-top: -20px;
     color: #333;
     font-weight: bold;
 }
@@ -341,7 +341,7 @@ h1 {
     margin-bottom: 10px;
     color: #333;
     font-size: 16px;
-	
+  
 }
 
 /* Campo de texto para el título */

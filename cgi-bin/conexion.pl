@@ -43,7 +43,16 @@ my $ dbh = DBI->connect($dsn, $user, $password, {
 print<<HTML;
 <!DOCTYPE html>
 <html>
+
     <head>
+        <!--Extensión para caracteres especiales-->
+        <meta charset="utf-8">
+
+        <!--fuente de letra-->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+              rel="stylesheet"
+              type="text/css">
+
         <!--fuente de letra-->
         <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
@@ -52,28 +61,28 @@ print<<HTML;
 
         <!--CSS-->
         <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
-        
-        <title>Conectar</title>
+
+        <title>CONEXIÓN</title>
     </head>
     
     <body>
+
         <!--CABECERA-->
-        <header>
-            <nav>
-                <ul>
-                    <li><a href="/index.html">INICIO</a></li>
-                    <li><a href="lista.pl">LISTA</a></li>
-                </ul>
-            </nav>
+        
+        <header> <a class="logo" href="/index.html">Wikipedia</a>
+          <nav>
+            <ul>
+              <li><a href="/index.html">Inicio</a></li>
+              <li><a href="lista.pl">Ver lista</a></li>
+            </ul>
+          </nav>
         </header>
 
-        <!--CAJA DE TITULO-->
-        <div>
-            PAGINA EN PROCESO...
-        </div>
-
-        <!--CREACION DE PAGINA-->
-        <div>   
+        <!--CONTENEDOR NUEVA PÁGINA-->
+        <div class="container">
+            <div id="crear-pagina" class="contenedor-nuevapagina"
+                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
+                <h2>CONECTANDO CON LA <span class="textos-rojos">PÁGINA</span></h2>   
 HTML
 
 if ($dbh) {
@@ -87,7 +96,7 @@ if ($dbh) {
         $sth = $dbh->prepare($consulta);
         $sth->execute($titulo, $texto);
 
-        print "<p>El contenido fue agregado con éxito</p>";
+        print "<p>El contenido fue agregado con éxito.</p>";
     
     } elsif ($direccion eq 'editor') {
         
@@ -100,19 +109,19 @@ if ($dbh) {
         print "<p>El contenido fue modificado con éxito.</p>";
 
     } else {
-        print "<p>Error información de entrada.</p>";
+        print "<p>Error en la información de entrada.</p>";
     }
 
     $sth->finish();
     $dbh->disconnect();
 
 } else {
-    print "\t    <p class='error'>No se pudo conectar a la base de datos.</p>\n";
+    print "\t    <p>No se pudo conectar a la base de datos.</p>\n";
 }
 
 print<<HTML;
-            <a href="lista.pl">Volver a Lista</a>
-            <a href="/index.html">Volver al Inicio</a>
+            <a href="lista.pl" class="conexion-ref">Volver a Lista</a>  -  
+            <a href="/index.html" class="conexion-ref">Volver al Inicio</a>
         </div>
     </body>
 </html>

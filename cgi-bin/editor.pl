@@ -65,16 +65,16 @@ print<<HTML;
 
 		<!--CABECERA-->
 		
-		<header> <a class="logo" href="index.html">Wikipedia</a>
+		<header> <a class="logo" href="/index.html">Wikipedia</a>
 		  <nav>
 			<ul>
-			  <li><a href="/index.html#integrantes">Inicio</a></li>
+			  <li><a href="/index.html">Inicio</a></li>
 			  <li><a href="lista.pl">Ver lista</a></li>
 			</ul>
 		  </nav>
 		</header>
 
-		<!--CONTENEDOR NUEVA PÁGINA-->
+		<!--CONTENEDOR EDITOR DE LA PÁGINA-->
 		<div class="container">
 			<div id="crear-pagina" class="contenedor-nuevapagina"
 				style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
