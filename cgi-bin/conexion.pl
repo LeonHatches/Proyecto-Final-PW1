@@ -13,7 +13,11 @@ print $cgi->header('text/html');
       $cgi->charset('UTF-8');
 
 #Si viene de nuevo.html o editor.pl
-my $pagina = $cgi->param('direccion');
+my $direccion = $cgi->param('direccion');
+my $consulta;
+my $sth;
+my $titulo;
+my $texto;
 
 #-----------------------------------------------------------------
 
@@ -49,7 +53,7 @@ print<<HTML;
         <!--CSS-->
         <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
         
-        <title>Eliminar</title>
+        <title>Conectar</title>
     </head>
     
     <body>
@@ -58,7 +62,7 @@ print<<HTML;
             <nav>
                 <ul>
                     <li><a href="index.html">INICIO</a></li>
-                    <li><a href="cgi-bin/lista.pl">LISTA</a></li>
+                    <li><a href="./lista.pl">LISTA</a></li>
                 </ul>
             </nav>
         </header>
@@ -73,12 +77,38 @@ print<<HTML;
 HTML
 
 if ($dbh) {
-    print "\t    <p class='mensaje'>Conexión a la base de datos establecida correctamente.</p>\n";
-    $dbh->disconnect();
-} else {
-    print "\t    <p class='error'>No se pudo conectar a la base de datos: " . DBI->errstr . "</p>\n";
-}
+    
+    $titulo = $cgi->param('titulo');
+    $texto  = $cgi->param('texto');
 
+    if ($direccion eq 'nuevo')
+    {
+        $consulta = "INSERT INTO wiki (titulo, texto) VALUES (?, ?)";
+        $sth = $dbh->prepare($consulta);
+        $sth->execute($titulo, $texto);
+
+        print "<p>El contenido fue agregado con éxito</p>";
+    
+    } elsif ($direccion eq 'editor') {
+
+        $consulta = "UPDATE wiki SET titulo = ?, texto = ? WHERE id = ?";
+        my $id = $cgi->param('id');
+
+        $sth = $dbh->prepare($consulta);
+        $sth->execute($titulo, $texto, $id);
+
+        print "<p>El contenido fue modificado con éxito.</p>";
+
+    } else {
+        print "<p>Error información de entrada.</p>";
+    }
+
+    $sth->finish();
+    $dbh->disconnect();
+
+} else {
+    print "\t    <p class='error'>No se pudo conectar a la base de datos.</p>\n";
+}
 
 print<<HTML;
             <a href="lista.pl">Volver a Lista</a>

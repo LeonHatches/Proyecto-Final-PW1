@@ -57,7 +57,7 @@ print<<HTML;
             <nav>
                 <ul>
                     <li><a href="index.html">INICIO</a></li>
-                    <li><a href="./lista.pl">LISTA</a></li>
+                    <li><a href="cgi-bin/lista.pl">LISTA</a></li>
                 </ul>
             </nav>
         </header>
@@ -78,7 +78,12 @@ if ($id) {
     #ACCION PARA ELIMINAR REGISTRO
     if ($dbh)
     {
-        if ($id) {
+        # ELIMINACION
+        my $consulta = "DELETE FROM wiki WHERE id = ?";
+        my $sth = $dbh->prepare($consulta);
+        my $delete = $sth->execute($id);
+
+        if ($delete) {
             print "\t    <p>Página con ID $id eliminada correctamente.</p>\n";
         } else {
             print "\t    <p>Error al intentar eliminar la página con ID $id.</p>\n";
@@ -96,7 +101,6 @@ if ($id) {
 
 print<<HTML;
             <a href="lista.pl">Volver a Lista</a>
-            <a href="index.html">Volver al Inicio</a>
         </div>
     </body>
 </html>
