@@ -1,11 +1,6 @@
 Nota:
-Entrar a la web con el puerto y carpeta cgi
-localhost:8140/cgi-bin/programaQueSeQuiereUsar.pl
-
-En algunos:
-localhost:8140/cgi-bin/programaQueSeQuiereUsar.pl?id=1
-
-Siendo id=1 prueba generada en el DOCKERFILE
+Entrar a la web con el puerto
+localhost:8140/index.html
 
 Comandos:
 
