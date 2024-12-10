@@ -81,8 +81,11 @@ HTML
 sub convertir_markdown_a_html {
     my ($markdown) = @_;
 
-    # Convertir encabezados
+    # Convertir encabezados del nivel 1 al 6
     $markdown =~ s/^###### (.+)$/<h6>$1<\/h6>/gm;
+    $markdown =~ s/^##### (.+)$/<h5>$1<\/h5>/gm;
+    $markdown =~ s/^#### (.+)$/<h4>$1<\/h4>/gm;
+    $markdown =~ s/^### (.+)$/<h3>$1<\/h3>/gm;
     $markdown =~ s/^## (.+)$/<h2>$1<\/h2>/gm;
     $markdown =~ s/^# (.+)$/<h1>$1<\/h1>/gm;
 
