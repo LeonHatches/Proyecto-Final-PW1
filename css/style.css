@@ -47,13 +47,13 @@ header nav ul li {
   margin: 0 30px; /* Separación entre las opciones */
 }
 
-header nav ul li a, .conexion-ref {
+header nav ul li a {
   color: #333;
   text-decoration: none;
   font-weight: 600;
 }
 
-header nav ul li a, .conexion-ref:hover {
+header nav ul li a:hover {
   text-decoration: underline;
 }
 

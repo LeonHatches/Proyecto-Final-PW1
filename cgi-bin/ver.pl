@@ -5,39 +5,59 @@ use warnings;
 use CGI;
 use DBI;
 use utf8;
-use Encode;
 
 # CGI
 my $cgi = CGI->new;
-print $cgi->header(-type => 'text/html', -charset => 'UTF-8');
+print $cgi->header('text/html');
+      $cgi->charset('UTF-8');
 
-# HTML inicial con estructura similar a editor.pl
-print <<HTML;
+my $id = $cgi->param('id');
+
+
+print<<HTML;
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Visualizar Página</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-<header>
-    <nav>
-        <ul>
-            <li><a href="/index.html">Inicio</a></li>
-            <li><a href="lista.pl">Listado</a></li>
-        </ul>
-    </nav>
-</header>
 
-<div class="container">
-    <div class="texto-left">
+    <head>
+        <!--Extensión para caracteres especiales-->
+        <meta charset="utf-8">
+
+        <!--fuente de letra-->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+              rel="stylesheet"
+              type="text/css">
+
+        <!--fuente de letra-->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+            rel="stylesheet"
+            type="text/css">
+
+        <!--CSS-->
+        <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
+
+        <title>CONEXIÓN</title>
+    </head>
+    
+    <body>
+
+        <!--CABECERA-->
+        
+        <header> <a class="logo" href="/index.html">Wikipedia</a>
+          <nav>
+            <ul>
+              <li><a href="/index.html">Inicio</a></li>
+              <li><a href="lista.pl">Ver lista</a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <!--CONTENEDOR VISUAL DE LA PÁGINA-->
+        <div class="container">
+            <div id="crear-pagina" class="contenedor-nuevapagina"
+                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;"> 
 HTML
 
-# Obtener el ID desde la URL
-my $id = $cgi->param('id');
 
 if ($id) {
 
@@ -57,8 +77,10 @@ if ($id) {
         my $ dbh = DBI->connect($dsn, $user, $password, {
             RaiseError => 1,
             PrintError => 0,
-            mysql_enable_utf8 => 1,
+            mysql_enable_utf8mb4 => 1,
         });
+
+	$dbh->do("SET NAMES utf8mb4");
 
         #-----------------------------------------------------------------
 
@@ -72,10 +94,10 @@ if ($id) {
             my $html_content = convertir_markdown_a_html($row->{texto});
 
             # Mostrar el texto y el título
-            print "<h1 class='titulo'>" . encode_utf8($row->{titulo}) . "</h1>\n";
+            print "<h1 class='titulo'>" . $row->{titulo} . "</h1>\n";
             print "<div class='texto'>\n$html_content\n</div>\n";
         } else {
-            print "<p>No se encontró la página con el ID: $id</p>\n";
+            print "<p>No se encontró la página.</p>\n";
         }
 
         $sth->finish();
@@ -87,14 +109,16 @@ if ($id) {
     print "<p>ID no proporcionado o inválido.</p>\n";
 }
 
-# HTML final con un enlace de regreso al listado
-print <<'HTML';
-    </div>
-</div>
-<footer>
-    <a href="lista.pl" class="btn-accion btn-gris">Volver al Listado</a>
-</footer>
-</body>
+print<<HTML;
+                <!--BOTONES-->
+                <br>
+                <div class="botones" style="justify-content: center;">
+                    <a href="lista.pl" class="btn-accion btn-crear">Volver a Lista</a>
+                    <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
 HTML
 
@@ -122,6 +146,6 @@ sub convertir_markdown_a_html {
     # Convertir saltos de línea a <br>
     $markdown =~ s/\n/<br>\n/g;
 
-    return encode_utf8($markdown);
+    return $markdown;
 }
 

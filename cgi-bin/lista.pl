@@ -31,11 +31,12 @@ my $dbh = DBI->connect(
     {
         RaiseError => 1,
         PrintError => 0,
-        AutoCommit => 1
+        AutoCommit => 1,
+	mysql_enable_utf8mb4 => 1
     }
 ) or die "Error al conectar a la base de datos MariaDB: $DBI::errstr\n";
 
-$dbh->do("SET NAMES 'utf8'");
+$dbh->do("SET NAMES utf8mb4");
 
 #-------------------------------------------------------------
 
@@ -134,7 +135,7 @@ print<<HTML;
                 <!--BOTONES-->
                 <br>
                 <div class="botones" style="justify-content: center;">
-                    <a href="nuevo.html" class="btn-accion btn-crear">Crear página</a>
+                    <a href="/nuevo.html" class="btn-accion btn-crear">Crear página</a>
                     <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
                 </div>
             </div>

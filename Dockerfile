@@ -39,6 +39,9 @@ COPY ./images/ /var/www/html/images
 
 RUN chmod +x /usr/lib/cgi-bin/conexion.pl
 RUN chmod +x /usr/lib/cgi-bin/ver.pl
+RUN chmod +x /usr/lib/cgi-bin/editor.pl
+RUN chmod +x /usr/lib/cgi-bin/eliminar.pl
+RUN chmod +x /usr/lib/cgi-bin/lista.pl
 
 # Copia el archivo de configuración de Apache
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
@@ -53,8 +56,7 @@ RUN service mariadb start && \
     mysql -e "FLUSH PRIVILEGES;" && \
     mysql -u root -p'1234567890' -e "CREATE DATABASE wikipweb1;" && \
     mysql -u root -p'1234567890' -e "USE wikipweb1; \
-        CREATE TABLE wiki (id INT AUTO_INCREMENT PRIMARY KEY, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL); \
-	INSERT INTO wiki (titulo, texto) VALUES ('EjemploConsola', '## Este es un pequeño ejemplo\n###### Prueba\nDescripcion-Descripcion-Descripcion-Descripcion');"
+        CREATE TABLE wiki (id INT AUTO_INCREMENT PRIMARY KEY, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL);"
 
 # Ajustar permisos de MariaDB para que funcione correctamente
 RUN sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf && \

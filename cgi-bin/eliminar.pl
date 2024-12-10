@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-
 # Modulos
 use strict;
 use warnings;

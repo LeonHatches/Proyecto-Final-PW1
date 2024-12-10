@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-
 # Modulos
 use strict;
 use warnings;
@@ -11,7 +10,6 @@ use utf8;
 # CGI
 my $cgi = CGI->new;
 print $cgi->header('text/html');
-      $cgi->charset('UTF-8');
 
 my $id = $cgi->param('id');
 
@@ -31,8 +29,11 @@ my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
 my $ dbh = DBI->connect($dsn, $user, $password, {
 	RaiseError => 1,
 	PrintError => 0,
-	mysql_enable_utf8 => 1,
+	AutoCommit => 1,
+	mysql_enable_utf8mb4 => 1
 });
+
+$dbh->do("SET NAMES utf8mb4");
 
 #-----------------------------------------------------------------
 
@@ -84,7 +85,7 @@ HTML
 
 if ($dbh)
 {
-	print "\t\t\t\t\t<form action=\"./conexion.pl\" method=\"GET\" class=\"formulario-estilizado\">\n";
+	print "\t\t\t\t\t<form action=\"conexion.pl\" method=\"GET\" class=\"formulario-estilizado\" accept-charset=\"utf-8\">\n";
 	
 	my $query = "SELECT titulo, texto FROM wiki WHERE id = ?";
 	my $sth = $dbh->prepare($query);

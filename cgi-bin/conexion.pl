@@ -6,6 +6,7 @@ use warnings;
 use CGI;
 use DBI;
 use utf8;
+use Encode;
 
 # CGI
 my $cgi = CGI->new;
@@ -35,8 +36,11 @@ my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
 my $ dbh = DBI->connect($dsn, $user, $password, {
     RaiseError => 1,
     PrintError => 0,
-    mysql_enable_utf8 => 1,
+    AutoCommit => 1,
+    mysql_enable_utf8mb4 => 1
 });
+
+$dbh->do("SET NAMES utf8mb4");
 
 #-----------------------------------------------------------------
 
@@ -60,7 +64,7 @@ print<<HTML;
             type="text/css">
 
         <!--CSS-->
-        <link rel = "stylesheet" type = "text/css" href = "../css/style.css">
+        <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
 
         <title>CONEXIÓN</title>
     </head>
@@ -87,8 +91,8 @@ HTML
 
 if ($dbh) {
     
-    $titulo = $cgi->param('titulo');
-    $texto  = $cgi->param('texto');
+    $titulo = $cgi->param("titulo");
+    $texto  = $cgi->param("texto");
 
     if ($direccion eq 'nuevo')
     {
