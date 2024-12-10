@@ -94,8 +94,8 @@ if ($id) {
             my $html_content = convertir_markdown_a_html($row->{texto});
 
             # Mostrar el texto y el título
-            print "<h1 class='titulo'>" . $row->{titulo} . "</h1>\n";
-            print "<div class='texto'>\n$html_content\n</div>\n";
+            print "<h1 style=\"text-align: left;\">" . $row->{titulo} . "</h1>\n";
+            print "<div style=\"text-align: left;\">\n$html_content\n</div>\n";
         } else {
             print "<p>No se encontró la página.</p>\n";
         }
