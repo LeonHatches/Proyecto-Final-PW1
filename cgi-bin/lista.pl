@@ -11,42 +11,6 @@ my $cgi = CGI->new;
 print $cgi->header('text/html');
       $cgi->charset('UTF-8');
 
-print<<HTML;
-<!DOCTYPE html>
-<html>
-    <head>
-        <!--fuente de letra-->
-        <link
-            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-            rel="stylesheet"
-            type="text/css">
-
-        <!--CSS-->
-        <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
-
-        <title>Lista</title>
-    </head>
-    
-    <body>
-        <!--CABECERA-->
-        <header>
-            <nav>
-                <ul>
-                    <li><a href="/index.html">INICIO</a></li>
-                    <li><a href="/nuevo.html">NUEVO</a></li>
-                </ul>
-            </nav>
-        </header>
-
-
-        <!--CAJA DE TITULO-->
-        <div>
-            TODAS LAS PÁGINAS
-        </div>
-
-        <!--LISTA - TABLA DE PAGINAS-->
-        <div>   
-HTML
 
 #-------------------------------------------------------------
 
@@ -75,6 +39,54 @@ $dbh->do("SET NAMES 'utf8'");
 
 #-------------------------------------------------------------
 
+
+print<<HTML;
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <!--Extensión para caracteres especiales-->
+        <meta charset="utf-8">
+
+        <!--fuente de letra-->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+              rel="stylesheet"
+              type="text/css">
+
+        <!--fuente de letra-->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+            rel="stylesheet"
+            type="text/css">
+
+        <!--CSS-->
+        <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
+
+        <title>LISTA</title>
+    </head>
+    
+    <body>
+
+        <!--CABECERA-->
+        
+        <header> <a class="logo" href="/index.html">Wikipedia</a>
+          <nav>
+            <ul>
+              <li><a href="/index.html">Inicio</a></li>
+              <li><a href="/nuevo.html">Nueva Página</a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <!--CONTENEDOR NUEVA PÁGINA-->
+        <div class="container">
+            <div class="contenedor-nuevapagina"
+                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
+                <h2>LISTA DE <span class="textos-rojos">PÁGINAS</span></h2>   
+HTML
+
+
+
 if ($dbh) {
     # Consultas a la tabla wiki
     my $sql = "SELECT id, titulo FROM wiki";
@@ -82,26 +94,30 @@ if ($dbh) {
     $sth->execute();
 
     print<<HTML;
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Titulo</th>
-                    <th>Acciones</th>
-                </tr>
+            <table class="tabla-markdown">
+                <thead>
+                    <tr>
+                        <th><h2>ID</h2></th>
+                        <th><h2>Titulo<h2></th>
+                        <th><h2>Acciones</h2></th>
+                    </tr>
+                </thead> 
 HTML
 
     while (my $row = $sth->fetchrow_hashref) {
 
         print<<HTML;
-                <tr>
-                    <td>$row->{id}</td>
-                    <td>$row->{titulo}</td>
-                    <td>
-                        <a href='ver.pl?id=$row->{id}'>V</a>
-                        <a href='editor.pl?id=$row->{id}'>E</a>
-                        <a href='eliminar.pl?id=$row->{id}'>X</a>
-                    </td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td style="text-align: center;">$row->{id}</td>
+                        <td>$row->{titulo}</td>
+                        <td style="justify-content: center;" class="botones">
+                            <a href='ver.pl?id=$row->{id}' class="btn-accion btn-gris">V</a>
+                            <a href='editor.pl?id=$row->{id}' class="btn-accion btn-gris">E</a>
+                            <a href='eliminar.pl?id=$row->{id}' class="btn-accion btn-crear">X</a>
+                        </td>
+                    </tr>
+                </tbody>
 HTML
     }
     
@@ -113,11 +129,17 @@ HTML
     die "Error al conectar a la base de datos de MariaDB: " . DBI->errstr;
 }
 
-print<<HTML;
 
-            <a href='/nuevo.html'><button>Nueva página</button></a>
+print<<HTML;
+                <!--BOTONES-->
+                <br>
+                <div class="botones" style="justify-content: center;">
+                    <a href="nuevo.html" class="btn-accion btn-crear">Crear página</a>
+                    <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
+                </div>
+            </div>
         </div>
     </body>
 </html>
-
 HTML
+

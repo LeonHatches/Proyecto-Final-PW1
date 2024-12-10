@@ -60,7 +60,7 @@ print<<HTML;
             type="text/css">
 
         <!--CSS-->
-        <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
+        <link rel = "stylesheet" type = "text/css" href = "../css/style.css">
 
         <title>CONEXIÓN</title>
     </head>
@@ -120,8 +120,13 @@ if ($dbh) {
 }
 
 print<<HTML;
-            <a href="lista.pl" class="conexion-ref">Volver a Lista</a>  -  
-            <a href="/index.html" class="conexion-ref">Volver al Inicio</a>
+                <!--BOTONES-->
+                <br>
+                <div class="botones" style="justify-content: center;">
+                    <a href="lista.pl" class="btn-accion btn-crear">Volver a Lista</a>
+                    <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
+                </div>
+            </div>
         </div>
     </body>
 </html>
