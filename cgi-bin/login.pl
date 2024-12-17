@@ -11,6 +11,8 @@ use utf8;
 # CGI
 my $cgi = CGI->new;
 print $cgi->header('application/xml');
+      $cgi->charset('UTF-8');
+      
 print "<?xml version='1.0' encoding='utf-8'?>\n";
 
 my $username = $cgi->param('user');
@@ -66,7 +68,7 @@ sub verificarCuenta {
 
 	my $consulta = "SELECT userName, firstName, lastName FROM Users WHERE userName = ? AND password = ?";
 	my $sth = $dbh->prepare($consulta);
-	$sth->execute($user, $passw);
+	$sth->execute($username, $passw);
 
 	my @row = $sth->fetchrow_array;
 
@@ -78,11 +80,11 @@ sub verificarCuenta {
 
 sub xmlCuenta {
 	my @row = @_;
-	my ($username, $firstName, $lastName) = ($row[0], $row[1], $row[3]);
+	my ($username, $firstName, $lastName) = ($row[0], $row[1], $row[2]);
 
 	print<<XML;
 <user>
-	<owner>$user</owner>
+	<owner>$username</owner>
 	<firstName>$firstName</firstName>
 	<lastName>$lastName</lastName>
 </user>
