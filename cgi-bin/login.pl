@@ -11,9 +11,9 @@ use utf8;
 # CGI
 my $cgi = CGI->new;
 print $cgi->header('application/xml');
-print "<?xml version='1.0' encoding='utf-8'?>";
+print "<?xml version='1.0' encoding='utf-8'?>\n";
 
-my $user = $cgi->param('user');
+my $username = $cgi->param('user');
 my $passw = $cgi->param('password');
 
 #-----------------------------------------------------------------
@@ -37,12 +37,54 @@ my $ dbh = DBI->connect($dsn, $user, $password, {
 
 #-----------------------------------------------------------------
 
-if (defined ($user) and defined ($passw) ) {
-	if ( verificarCuenta() ) {
-
+if (defined ($username) and defined ($passw) ) {
+	if ( my @row = verificarCuenta($username, $passw) ) {
+		xmlCuenta(@row);
 	} else {
 		xmlVacio();
 	}
+
 } else {
 	xmlVacio();
+}
+
+
+sub xmlVacio {
+	print<<XML;
+<user>
+	<owner></owner>
+	<firstName></firstName>
+	<lastName></lastName>
+</user>
+XML
+}
+
+
+sub verificarCuenta {
+	my $username = $_[0];
+	my $passw = $_[1];
+
+	my $consulta = "SELECT userName, firstName, lastName FROM Users WHERE userName = ? AND password = ?";
+	my $sth = $dbh->prepare($consulta);
+	$sth->execute($user, $passw);
+
+	my @row = $sth->fetchrow_array;
+
+	$sth->finish;
+	$dbh->disconnect;
+
+	return @row;
+}
+
+sub xmlCuenta {
+	my @row = @_;
+	my ($username, $firstName, $lastName) = ($row[0], $row[1], $row[3]);
+
+	print<<XML;
+<user>
+	<owner>$user</owner>
+	<firstName>$firstName</firstName>
+	<lastName>$lastName</lastName>
+</user>
+XML
 }

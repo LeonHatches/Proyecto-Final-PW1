@@ -58,7 +58,7 @@ RUN service mariadb start && \
     mysql -u root -p'1234567890' -e "USE wikipweb1; \
         CREATE TABLE wiki (id INT AUTO_INCREMENT PRIMARY KEY, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL); \
 	CREATE TABLE Users (UserName VARCHAR(60) NOT NULL PRIMARY KEY, password VARCHAR(200) NOT NULL, lastName TEXT NOT NULL, firstName TEXT NOT NULL); \
-	CREATE TABLE Articles (owner VARCHAR(60) NOT NULL FOREIGN KEY REFERENCES Users(userName) ON DELETE CASCADE, title VARCHAR(100) NOT NULL, text TEXT NOT NULL, PRIMARY KEY (title, owner));"
+	CREATE TABLE Articles (owner VARCHAR(60) NOT NULL, title VARCHAR(100) NOT NULL, text TEXT NOT NULL, FOREIGN KEY (owner) REFERENCES Users(userName) ON DELETE CASCADE,PRIMARY KEY (title, owner));"
 
 # Ajustar permisos de MariaDB para que funcione correctamente
 RUN sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf && \
