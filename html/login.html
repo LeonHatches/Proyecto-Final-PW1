@@ -75,15 +75,23 @@
 	                    if (owner == '') {
 
 	                    	const mensaje = document.getElementById('mensaje');
-	                    	mensaje.innerHTML = '<p class="error">Nombre de Usuario o contraseña no válidos</p>';
+	                    	mensaje.innerHTML = '<p class="error">Nombre de Usuario o contraseña no válidos.</p>';
 
 	                    } else {
 
 	                    	const contenedorForm = document.getElementById('contenedorForm');
 	                    	contenedorForm.innerHTML =
-		                    	`<p><strong>Usuario:</strong> ${owner}</p>
-		                    	<p><strong>Nombre:</strong> ${firstName}</p>
-								<p><strong>Apellido:</strong> ${lastName}</p>`;
+		                    	`
+		                    		<h2>¡Bienviendo, <span class="textos-rojos">${owner}!</span></h2>
+
+			                    	<p><strong>Usuario:</strong> ${owner}</p>
+			                    	<p><strong>Nombre:</strong> ${firstName}</p>
+									<p><strong>Apellido:</strong> ${lastName}</p>
+									<div style="justify-content: center;" class="botones">
+										<a href='nuevo.html?id=${owner}' class="btn-accion btn-gris">Nueva Página</a>
+										<a href='lista.html?id=${owner}' class="btn-accion btn-crear">Mi Lista</a>
+									</div>
+								`;
 
 	                    }
 	                    
