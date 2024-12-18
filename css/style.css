@@ -324,7 +324,7 @@ h1 {
     font-weight: bold;
 }
 
-.formulario-estilizado {
+.formulario-estilizado, .error {
     max-width: 600px;
     margin: 40px auto;
     background-color: #fff;
@@ -392,3 +392,10 @@ h1 {
     background-color: #C21F2B;
 }
 
+.error {
+    background-color: #DD2431;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+}

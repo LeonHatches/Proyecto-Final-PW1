@@ -17,9 +17,9 @@
 			type="text/css">
 
 		<!--CSS-->
-		<link rel = "stylesheet" type = "text/css" href = "../css/style.css">
+		<link rel = "stylesheet" type = "text/css" href = "/css/style.css">
 
-		<title>EDITAR</title>
+		<title>Iniciar Sesión</title>
 	</head>
 	
 	<body>
@@ -39,7 +39,7 @@
 		<div class="container">
 			<div id="contenedorForm" class="contenedor-nuevapagina"
 				style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
-
+				<div id="mensaje"></div>
 				<h2>INICIAR <span class="textos-rojos">SESIÓN</span></h2>
 
 				<!--FORMULARIO-->
@@ -58,7 +58,7 @@
 
 			function iniciarSesion()
 			{
-				var name = document.getElementById('user').value;
+				var user = document.getElementById('user').value;
 				var password = document.getElementById('password').value;
 
 				fetch (`/cgi-bin/login.pl?user=${user}&password=${password}`)
@@ -68,15 +68,25 @@
 						const dom = new DOMParser();
 						const xml = dom.parseFromString(xmlText, 'application/xml');
 
-						const owner = xml.getElementsByTagName('owner')[0];
-	                    const firstName = xml.getElementsByTagName('firstName')[0];
-	                    const lastName = xml.getElementsByTagName('lastName')[0];
+						const owner = xml.getElementsByTagName('owner')[0].textContent;
+	                    const firstName = xml.getElementsByTagName('firstName')[0].textContent;
+	                    const lastName = xml.getElementsByTagName('lastName')[0].textContent;
 
-	                    const contenedorForm = document.getElementById('contenedorForm');
-	                    contenedorForm.innerHTML =
-	                    	`<p><strong>Usuario:</strong> ${owner}</p>
-	                    	<p><strong>Nombre:</strong> ${firstName}</p>
-							<p><strong>Apellido:</strong> ${lastName}</p>`;
+	                    if (owner == '') {
+
+	                    	const mensaje = document.getElementById('mensaje');
+	                    	mensaje.innerHTML = '<p class="error">Nombre de Usuario o contraseña no válidos</p>';
+
+	                    } else {
+
+	                    	const contenedorForm = document.getElementById('contenedorForm');
+	                    	contenedorForm.innerHTML =
+		                    	`<p><strong>Usuario:</strong> ${owner}</p>
+		                    	<p><strong>Nombre:</strong> ${firstName}</p>
+								<p><strong>Apellido:</strong> ${lastName}</p>`;
+
+	                    }
+	                    
 					})
 				.catch (error =>{
 					console.log("Error abriendo el CGI.");
