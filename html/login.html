@@ -51,13 +51,40 @@
 
 					<button onclick="iniciarSesion()" class="btn-accion btn-crear">Enviar</button>
 				</div>
-
-				</div>
 			</div>
 		</div>
 
 		<script>
-			
+
+			function iniciarSesion()
+			{
+				var name = document.getElementById('user').value;
+				var password = document.getElementById('password').value;
+
+				fetch (`/cgi-bin/login.pl?user=${user}&password=${password}`)
+					.then(response => response.text())
+					.then(xmlText =>
+					{
+						const dom = new DOMParser();
+						const xml = dom.parseFromString(xmlText, 'application/xml');
+
+						const owner = xml.getElementsByTagName('owner')[0];
+	                    const firstName = xml.getElementsByTagName('firstName')[0];
+	                    const lastName = xml.getElementsByTagName('lastName')[0];
+
+	                    const contenedorForm = document.getElementById('contenedorForm');
+	                    contenedorForm.innerHTML =
+	                    	`<p><strong>Usuario:</strong> ${owner}</p>
+	                    	<p><strong>Nombre:</strong> ${firstName}</p>
+							<p><strong>Apellido:</strong> ${lastName}</p>`;
+					})
+				.catch (error =>{
+					console.log("Error abriendo el CGI.");
+					const contenedorForm = document.getElementById('contenedorForm');
+					contenedorForm.innerHTML = '<p>No se pudo conectar con la página ...</p>';
+				});
+			}
+
 		</script>
 		
 	</body>
