@@ -51,10 +51,10 @@
 					<input type="password" id="password" name="password" placeholder="Ingrese su contraseña aquí">
 
 					<label for="user">Nombres:</label>
-					<input type="text" id="user" name="user" placeholder="Ingrese su nombres aquí">
+					<input type="text" id="firstName" name="firstName" placeholder="Ingrese todos sus nombres aquí">
 
 					<label for="user">Apellidos:</label>
-					<input type="text" id="user" name="user" placeholder="Ingrese su apellidos aquí">
+					<input type="text" id="lastName" name="lastName" placeholder="Ingrese todos sus apellidos aquí">
 
 					<button onclick="registrarse()" class="btn-accion btn-crear">Enviar</button>
 				</div>
@@ -65,7 +65,50 @@
 
 			function registrarse()
 			{
-				
+				var user = document.getElementById('user').value;
+				var password = document.getElementById('password').value;
+				var firstName = document.getElementById('firstName').value;
+				var lastName = document.getElementById('lastName').value;
+
+				fetch (`/cgi-bin/register.pl?user=${user}&password=${password}&firstName=${firstName}&lastName=${lastName}`)
+					.then(response => response.text())
+					.then(xmlText =>
+					{
+						const dom = new DOMParser();
+						const xml = dom.parseFromString(xmlText, 'application/xml');
+
+						const owner = xml.getElementsByTagName('owner')[0].textContent;
+	                    const firstName = xml.getElementsByTagName('firstName')[0].textContent;
+	                    const lastName = xml.getElementsByTagName('lastName')[0].textContent;
+
+	                    if (owner == '') {
+
+	                    	const mensaje = document.getElementById('mensaje');
+	                    	mensaje.innerHTML = '<p class="error">El Nombre de Usuario ya está en uso</p>';
+
+	                    } else {
+
+	                    	const contenedorForm = document.getElementById('contenedorForm');
+	                    	contenedorForm.innerHTML =
+		                    	`
+		                    		<h2>Cuenta Creada <span class="textos-rojos">Exitosamente</span></h2>
+
+			                    	<p><strong>Usuario:</strong> ${owner}</p>
+			                    	<p><strong>Nombre:</strong> ${firstName}</p>
+									<p><strong>Apellido:</strong> ${lastName}</p>
+									<div style="justify-content: center;" class="botones">
+										<a href='/login.html' class="btn-accion btn-crear">Iniciar Sesión</a>
+									</div>
+								`;
+
+	                    }
+	                    
+					})
+				.catch (error =>{
+					console.log("Error abriendo el CGI.");
+					const contenedorForm = document.getElementById('contenedorForm');
+					contenedorForm.innerHTML = '<p>No se pudo conectar con la página ...</p>';
+				});
 			}
 
 		</script>
