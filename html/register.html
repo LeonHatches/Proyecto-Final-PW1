@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<!--Extensión para caracteres especiales-->
+		<meta charset="utf-8">
+
+		<!--fuente de letra-->
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+			  rel="stylesheet"
+		      type="text/css">
+
+		<!--fuente de letra-->
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+			rel="stylesheet"
+			type="text/css">
+
+		<!--CSS-->
+		<link rel = "stylesheet" type = "text/css" href = "../css/style.css">
+
+		<title>Registrarse</title>
+	</head>
+	
+	<body>
+
+		<!--CABECERA-->
+		
+		<header> <a class="logo" href="index.html">Wikipedia</a>
+		  <nav>
+			<ul>
+			  <li><a href="/index.html">Inicio</a></li>
+			  <li><a href="lista.pl">Ver lista</a></li>
+			</ul>
+		  </nav>
+		</header>
+
+		<!--FORMULARIO DE INICIO DE SESIÓN-->
+		<div class="container">
+			<div id="contenedorForm" class="contenedor-nuevapagina"
+				style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
+				<div id="mensaje"></div>
+				<h2>CREAR <span class="textos-rojos">CUENTA</span></h2>
+
+				<!--FORMULARIO-->
+				<div class="formulario-estilizado">
+					<label for="user">Nuevo Usuario:</label>
+					<input type="text" id="user" name="user" placeholder="Ingrese su usuario aquí">
+
+					<label for="password">Nueva Contraseña:</label>
+					<input type="password" id="password" name="password" placeholder="Ingrese su contraseña aquí">
+
+					<label for="user">Nombres:</label>
+					<input type="text" id="user" name="user" placeholder="Ingrese su nombres aquí">
+
+					<label for="user">Apellidos:</label>
+					<input type="text" id="user" name="user" placeholder="Ingrese su apellidos aquí">
+
+					<button onclick="registrarse()" class="btn-accion btn-crear">Enviar</button>
+				</div>
+			</div>
+		</div>
+
+		<script>
+
+			function registrarse()
+			{
+				
+			}
+
+		</script>
+		
+	</body>
+</html>
