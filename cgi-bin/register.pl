@@ -7,6 +7,7 @@ use warnings;
 use CGI;
 use DBI;
 use utf8;
+use Encode;
 
 # CGI
 my $cgi = CGI->new;
@@ -36,7 +37,7 @@ my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
 my $ dbh = DBI->connect($dsn, $user, $password, {
 	RaiseError => 1,
 	PrintError => 0,
-	mysql_enable_utf8 => 1,
+	mysql_enable_utf8mbd4 => 1,
 });
 
 #-----------------------------------------------------------------
@@ -66,16 +67,30 @@ XML
 
 
 sub crearCuenta {
-	my $username = $_[0];
-	my $passw = $_[1];
 
-	my $consulta = "";
-	my $sth = $dbh->prepare($consulta);
-	$sth->execute($username, $passw);
+	my ($username, $passw, $firstName, $lastName) = @_;
+	my @row;
 
-	my @row = $sth->fetchrow_array;
+	my $consulta = "INSERT INTO Users (userName, password, firstName, lastName) VALUES (?, ?, ?, ?)";
+	my $sth_INSERT = $dbh->prepare($consulta);
 
-	$sth->finish;
+	eval {
+	   $sth_INSERT->execute($username, $passw, $firstName, $lastName);
+	};
+
+	if (!$@) {
+
+		$consulta = "SELECT userName, firstName, lastName FROM Users WHERE userName = ? AND firstName = ? AND lastName = ?";
+		my $sth_SELECT = $dbh->prepare($consulta);
+		$sth_SELECT->execute($username, $firstName, $lastName) or die;
+
+		@row = $sth_SELECT->fetchrow_array;
+
+		$sth_SELECT->finish;
+		$sth_INSERT->finish;
+
+	}
+	
 	$dbh->disconnect;
 
 	return @row;
