@@ -50,7 +50,7 @@ if (defined $direccion && $direccion eq "login") {
     my $userName = $cgi->param('owner');
 
     # Consultar artículos según el propietario
-    my $sql = "SELECT owner, title FROM Articles WHERE owner = ?";
+    my $sql = "SELECT id, owner, title FROM Articles WHERE owner = ?";
     my $sth = $dbh->prepare($sql);
     $sth->execute($userName);
 
