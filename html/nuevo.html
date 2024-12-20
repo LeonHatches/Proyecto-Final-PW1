@@ -25,23 +25,23 @@
 	        <nav>
 	            <ul>
 	                <li><a href="/index.html">Inicio</a></li>
-	                <li><a href="/lista.pl?direccion=offline">Ver lista</a></li>
+	                <li><a href="/lista.html?direccion=offline">Ver lista</a></li>
 	            </ul>
 	        </nav>
 	    </header>
 
 	    <!-- FORMULARIO PARA CREAR NUEVA PÁGINA -->
 	    <div class="container">
-			<div id="crear-pagina" class="contenedor-nuevapagina"
+			<div id="contenedorForm" class="contenedor-nuevapagina"
 			style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
 
 	            <h2>CREAR NUEVA <span class="textos-rojos">PÁGINA</span></h2>
 
 	            <!-- FORMULARIO -->
 	            <div class="formulario-estilizado">
-	                <label for="titulo">Título:</label>
+	                <label for="title">Título:</label>
 	                <input type="text" id="title" name="title" placeholder="Ingrese el título aquí">
-	                <label for="contenido">Contenido:</label>
+	                <label for="text">Contenido:</label>
 	                <textarea id="text" name="text" placeholder="Escriba el contenido aquí"></textarea>
 
 	                <button onclick="crearPagina()" class="btn-accion btn-crear">Enviar</button>
@@ -135,16 +135,16 @@
                 const param = new URLSearchParams(window.location.search);
                 owner = param.get('owner');
 
-	            fetch(`/cgi-bin/nuevo.pl?owmer=${owner}titulo=${titulo}&contenido=${contenido}`)
+	            fetch(`/cgi-bin/nuevo.pl?owner=${owner}&title=${encodeURIComponent(titulo)}&text=${encodeURIComponent(contenido)}`)
 	                .then(response => response.text())
 	                .then(xmlText => {
 	                    const dom = new DOMParser();
 	                    const xml = dom.parseFromString(xmlText, 'application/xml');
 
-	                    const title = xml.getElementsByTagName('title')[0]?.textContent;
-	                    const text = xml.getElementsByTagName('text')[0]?.textContent;
+	                    const title = xml.getElementsByTagName('title')[0].textContent;
+	                    const text = xml.getElementsByTagName('text')[0].textContent;
 
-	                    if (owner == '') {
+	                    if (title == '' || text == '') {
 
 	                    	const mensaje = document.getElementById('mensaje');
 	                        mensajeDiv.innerHTML = `<p class="error">No se pudo crear la página</p>`;
@@ -156,7 +156,10 @@
 	                            `
 	                                <h2>PÁGINA CREADA <span class="textos-rojos">EXITOSAMENTE</span></h2>
 	                                <p><strong>Título:</strong> ${title}</p>
-	                                <p><strong>Texto:</strong>${text}</a></p>
+	                                <p><strong>Texto:</strong>${text}</p>
+	                                <div style="justify-content: center;" class="botones">
+										<a href='lista.html?direccion=login&owner=${owner}' class="btn-accion btn-crear">Ver Mi Lista</a>
+									</div>
 	                            `;
 	                    }
 	                })
