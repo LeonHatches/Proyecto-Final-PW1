@@ -56,7 +56,21 @@ RUN service mariadb start && \
     mysql -e "FLUSH PRIVILEGES;" && \
     mysql -u root -p'1234567890' -e "CREATE DATABASE wikipweb1;" && \
     mysql -u root -p'1234567890' -e "USE wikipweb1; \
-        CREATE TABLE wiki (id INT AUTO_INCREMENT PRIMARY KEY, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL);"
+        CREATE TABLE Users ( \
+            userName VARCHAR(50) PRIMARY KEY, \
+            password VARCHAR(255) NOT NULL, \
+            lastName VARCHAR(100), \
+            firstName VARCHAR(100) \
+        );" && \
+    mysql -u root -p'1234567890' -e "USE wikipweb1; \
+        CREATE TABLE Articles ( \
+            title VARCHAR(255), \
+            owner VARCHAR(50), \
+            text TEXT, \
+            PRIMARY KEY (title, owner), \
+            FOREIGN KEY (owner) REFERENCES Users(userName) \
+        );" && \
+    mysql -u root -p'1234567890' -e "FLUSH PRIVILEGES;"
 
 # Ajustar permisos de MariaDB para que funcione correctamente
 RUN sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mariadb.conf.d/50-server.cnf && \
