@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -17,7 +18,7 @@
 			type="text/css">
 
 		<!--CSS-->
-		<link rel = "stylesheet" type = "text/css" href = "/css/style.css">
+		<link rel = "stylesheet" type = "text/css" href = "../css/style.css">
 
 		<title>Iniciar Sesión</title>
 	</head>
@@ -30,7 +31,7 @@
 		  <nav>
 			<ul>
 			  <li><a href="/index.html">Inicio</a></li>
-			  <li><a href="lista.pl">Ver lista</a></li>
+			  <li><a href="/lista.html?direccion=offline">Ver lista</a></li>
 			</ul>
 		  </nav>
 		</header>
@@ -88,8 +89,8 @@
 			                    	<p><strong>Nombre:</strong> ${firstName}</p>
 									<p><strong>Apellido:</strong> ${lastName}</p>
 									<div style="justify-content: center;" class="botones">
-										<a href='nuevo.html?direccion=login&id=${owner}' class="btn-accion btn-gris">Nueva Página</a>
-										<a href='lista.html?direccion=login&id=${owner}' class="btn-accion btn-crear">Mi Lista</a>
+										<a href='nuevo.html?owner=${owner}' class="btn-accion btn-gris">Nueva Página</a>
+										<a href='lista.html?direccion=login&owner=${owner}' class="btn-accion btn-crear">Mi Lista</a>
 									</div>
 								`;
 

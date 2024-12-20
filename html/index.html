@@ -23,11 +23,13 @@
 <body>
 
 <!--CABECERA-->
-<header> <a class="logo" href="index.html">Wikipedia</a>
+<header> <a class="logo" href="/index.html">Wikipedia</a>
   <nav>
     <ul>
       <li><a href="#integrantes">Nosotros</a></li>
-      <li><a href="cgi-bin/lista.pl">Ver lista</a></li>
+      <li><a href="/lista.html?direccion=offline">Ver Lista</a></li>
+      <li><a href="/register.html">Regístrate</a></li>
+      <li><a href="/login.html">Iniciar Sesión</a></li>
     </ul>
   </nav>
 </header>
@@ -39,7 +41,7 @@
       <h1><span class="bienvenido">¡Bienvenido a nuestra</span> <span class="textos-rojos">Wikipedia!</span></h1>
       <p class="texto-bienvenida">En esta página podrás crear tu propia página basándote en el Markdown...</p>
       <div class="botones"> 
-		  <a href="nuevo.html" class="btn-accion btn-crear">Crear página</a> 
+		  <a href="login.html" class="btn-accion btn-crear">Crear página</a> 
 		  <a href="#descripcion-pagina" class="btn-accion btn-gris">Conocer más</a> </div>
     </div>
     <div class="imagen-derecha"> <img src="../images/image_index.png" alt="Imagen del curso" class="imagen-index"> </div>
@@ -93,10 +95,28 @@
       <h2>¿Cómo funciona la <span class="textos-rojos">página?</span></h2>
       <p class="justificar-texto"> Esta página permite crear contenido HTML dinámico utilizando Markdown, un lenguaje simple para dar formato a texto. Podrás generar páginas personalizadas con encabezados, listas y más, sin necesidad de conocimientos avanzados de HTML. </p>
       <!--BOTONES-->
-      <div class="botones"> <a href="nuevo.html" class="btn-accion btn-crear">Crear página</a> <a href="cgi-bin/lista.pl" class="btn-accion btn-gris">Ver lista</a> </div>
+      <div class="botones"> <a href="login.html" class="btn-accion btn-crear">Crear página</a> <a href="cgi-bin/lista.html?direccion=offline" class="btn-accion btn-gris">Ver lista</a> </div>
     </div>
     <div class="contenido-right"> <img src="../images/funcion.jpg" alt="Imagen del curso" class="imagen-pagina"> </div>
   </div>
 </div>
+
+<!-- INTRODUCCIÓN AL MARKDOWN -->
+<div class="container">
+    <div class="descripcion-pagina">
+        <div class="texto-izquierda">
+            <h1><span class="bienvenido">Primero... ¿Sabes cómo funciona </span> <span class="textos-rojos">MARKDOWN?</span></h1>
+            <p class="texto-bienvenida">Markdown es un lenguaje que permite dar formato a texto de forma sencilla.
+                Utiliza caracteres especiales para estructurar documentos, como # para títulos, * para cursivas, ** para negritas y listas con - o números.</p>
+            <div class="botones">
+                <a href="login.html?direccion=offline" class="btn-accion btn-crear">Empezar</a>
+            </div>
+        </div>
+        <div class="imagen-derecha">
+            <img src="../images/markdown.png" alt="Imagen del curso" class="imagen-markdown">
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

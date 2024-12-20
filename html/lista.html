@@ -29,7 +29,6 @@
             <nav>
                 <ul>
                     <li><a href="/index.html">Inicio</a></li>
-                    <li><a href="/nuevo.html">Nueva Página</a></li>
                 </ul>
             </nav>
         </header>
@@ -47,6 +46,7 @@
                 <table id="tabla-lista" class="tabla-markdown" style="display: none; width: 100%;">
                     <thead>
                         <tr>
+                            <th><h2>Autor</h2></th>
                             <th><h2>Título</h2></th>
                             <th><h2>Acciones</h2></th>
                         </tr>
@@ -59,7 +59,6 @@
                 <!-- Botones de navegación -->
                 <br>
                 <div class="botones" style="justify-content: center;">
-                    <a href="/nuevo.html" class="btn-accion btn-crear">Crear página</a>
                     <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
                 </div>
             </div>
@@ -67,13 +66,28 @@
 
         <!-- Script para cargar datos desde lista.pl -->
         <script>
+
             document.addEventListener("DOMContentLoaded", function () {
+
                 const statusDiv = document.getElementById("status");
                 const tablaLista = document.getElementById("tabla-lista");
                 const tbody = tablaLista.querySelector("tbody");
 
+                var direccion = "";
+                var owner = "";
+
+                // Obtiene los parametros enviados en el html
+                const param = new URLSearchParams(window.location.search);
+                direccion = param.get('direccion');
+                
+                if (direccion === "login") {
+                    owner = "&owner=" + param.get('owner');
+                }
+
+                
+
                 // Solicitar datos al CGI lista.pl
-                fetch('/cgi-bin/lista.pl?direccion=offline')
+                fetch(`/cgi-bin/lista.pl?direccion=${direccion}${owner}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error("Error al cargar los datos.");
@@ -92,26 +106,52 @@
                             return;
                         }
 
-                        // Generar filas dinámicamente
-                        for (let i = 0; i < articles.length; i++) {
-                            const owner = articles[i].getElementsByTagName("owner")[0].textContent;
-                            const title = articles[i].getElementsByTagName("title")[0].textContent;
+                        if (direccion === "login")
+                        {
+                            // Generar filas dinámicamente
+                            for (let i = 0; i < articles.length; i++) {
+                                const owner = articles[i].getElementsByTagName("owner")[0].textContent;
+                                const title = articles[i].getElementsByTagName("title")[0].textContent;
 
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
-                                <td>${title}</td>
-                                <td style="justify-content: center;" class="botones">
-                                    <a href="ver.pl?id=${owner}" class="btn-accion btn-gris">V</a>
-                                    <a href="editor.pl?id=${owner}" class="btn-accion btn-gris">E</a>
-                                    <a href="eliminar.pl?id=${owner}" class="btn-accion btn-crear">X</a>
-                                </td>
-                            `;
-                            tbody.appendChild(row);
+                                const row = document.createElement("tr");
+                                row.innerHTML = `
+                                    <td>${owner}</td>
+                                    <td>${title}</td>
+                                    <td style="justify-content: center;" class="botones">
+                                        <a href="ver.pl?owner=${owner}&title=${title}" class="btn-accion btn-gris">V</a>
+                                        <a href="editor.pl?owner=${owner}&title=${title}" class="btn-accion btn-gris">E</a>
+                                        <a href="eliminar.pl??owner=${owner}&title=${title}" class="btn-accion btn-crear">X</a>
+                                    </td>
+                                `;
+                                tbody.appendChild(row);
+                            }
+
+                            // Mostrar tabla y ocultar estado
+                            tablaLista.style.display = "table";
+                            statusDiv.style.display = "none";
+                        
+                        } else {
+
+                             // Generar filas dinámicamente
+                            for (let i = 0; i < articles.length; i++) {
+                                const owner = articles[i].getElementsByTagName("owner")[0].textContent;
+                                const title = articles[i].getElementsByTagName("title")[0].textContent;
+
+                                const row = document.createElement("tr");
+                                row.innerHTML = `
+                                    <td>${owner}</td>
+                                    <td>${title}</td>
+                                    <td style="justify-content: center;" class="botones">
+                                        <a href="ver.pl?owner=${owner}&title=${title}" class="btn-accion btn-gris">V</a>
+                                `;
+                                tbody.appendChild(row);
+                            }
+
+                            // Mostrar tabla y ocultar estado
+                            tablaLista.style.display = "table";
+                            statusDiv.style.display = "none";
+
                         }
-
-                        // Mostrar tabla y ocultar estado
-                        tablaLista.style.display = "table";
-                        statusDiv.style.display = "none";
                     })
                     .catch(error => {
                         statusDiv.textContent = "Error al cargar los artículos.";
