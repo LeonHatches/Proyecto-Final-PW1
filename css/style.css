@@ -324,7 +324,7 @@ h1 {
     font-weight: bold;
 }
 
-.formulario-estilizado {
+.formulario-estilizado, .error {
     max-width: 600px;
     margin: 40px auto;
     background-color: #fff;
@@ -345,7 +345,7 @@ h1 {
 }
 
 /* Campo de texto para el título */
-.formulario-estilizado input[type="text"] {
+.formulario-estilizado input[type="text"], input[type="password"]{
     width: 95%;
     padding: 10px;
     margin-bottom: 20px;
@@ -383,7 +383,7 @@ h1 {
 }
 
 .formulario-estilizado input,
-.formulario-estilizado textarea {
+.formulario-estilizado textarea, button {
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     color: #333;
@@ -392,3 +392,11 @@ h1 {
     background-color: #C21F2B;
 }
 
+.error {
+    background-color: #DD2431;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    padding: 15px;
+}
