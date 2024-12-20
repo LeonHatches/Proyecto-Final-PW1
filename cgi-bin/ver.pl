@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/Strawberry/perl/bin/perl.exe
+#/usr/bin/perl
 
 use strict;
 use warnings;
@@ -11,91 +12,52 @@ my $cgi = CGI->new;
 print $cgi->header('text/html');
       $cgi->charset('UTF-8');
 
-my $id = $cgi->param('id');
+my $owner = $cgi->param('owner');
+my $title = $cgi->param('title');
 
+if (defined $owner && defined $title) {
 
-print<<HTML;
-<!DOCTYPE html>
-<html>
+    #-----------------------------------------------------------------
 
-    <head>
-        <!--Extensión para caracteres especiales-->
-        <meta charset="utf-8">
+    # Configuración de conexión
+    my $db = 'wikipweb1';
+    my $db_host = 'localhost';
+    my $db_port = 3306;
+    my $db_user = 'root';
+    my $db_password = '1234567890';
 
-        <!--fuente de letra-->
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-              rel="stylesheet"
-              type="text/css">
+    # DSN de conexión
+    my $dsn = "DBI:mysql:database=$db;host=$db_host;port=$db_port";
 
-        <!--fuente de letra-->
-        <link
-            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-            rel="stylesheet"
-            type="text/css">
-
-        <!--CSS-->
-        <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
-
-        <title>CONEXIÓN</title>
-    </head>
-    
-    <body>
-
-        <!--CABECERA-->
-        
-        <header> <a class="logo" href="/index.html">Wikipedia</a>
-          <nav>
-            <ul>
-              <li><a href="/index.html">Inicio</a></li>
-              <li><a href="lista.pl">Ver lista</a></li>
-            </ul>
-          </nav>
-        </header>
-
-        <!--CONTENEDOR VISUAL DE LA PÁGINA-->
-        <div class="container">
-            <div id="crear-pagina" class="contenedor-nuevapagina"
-                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;"> 
-HTML
-
-
-if ($id) {
-
-        #-----------------------------------------------------------------
-
-        #Configuración de conexión
-        my $database = 'wikipweb1';
-        my $hostname = 'localhost';
-        my $port = 3306;
-        my $user = 'cgi_user';
-        my $password = '1234567890';
-
-        #DSN de conexión
-        my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
-
-        #Conexión a la DB
-        my $ dbh = DBI->connect($dsn, $user, $password, {
+    # Conexión a la base de datos
+    my $dbh = DBI->connect(
+        $dsn, 
+        $db_user, 
+        $db_password, 
+        {
             RaiseError => 1,
             PrintError => 0,
-            mysql_enable_utf8mb4 => 1,
-        });
+            AutoCommit => 1,
+            mysql_enable_utf8mb4 => 1
+        }
+    ) or die "Error al conectar a la base de datos MariaDB: $DBI::errstr\n";
 
-	$dbh->do("SET NAMES utf8mb4");
+    $dbh->do("SET NAMES utf8mb4");
 
-        #-----------------------------------------------------------------
+    #-----------------------------------------------------------------
 
     if ($dbh) {
-        my $sth = $dbh->prepare("SELECT titulo, texto FROM wiki WHERE id = ?");
-        $sth->execute($id);
+        my $sth = $dbh->prepare("SELECT title, text FROM Articles WHERE owner = ? AND title = ?");
+        $sth->execute($owner, $title);
 
         my $row = $sth->fetchrow_hashref;
         if ($row) {
             # Convertir Markdown a HTML
-            my $html_content = convertir_markdown_a_html($row->{texto});
+            my $html_content = convertir_markdown_a_html($row->{text});
 
             # Mostrar el texto y el título
-            print "<h1 style=\"text-align: left;\">" . $row->{titulo} . "</h1>\n";
-            print "<div style=\"text-align: left;\">\n$html_content\n</div>\n";
+            print "<h1>" . $row->{title} . "</h1>\n";
+            print "\n$html_content\n";
         } else {
             print "<p>No se encontró la página.</p>\n";
         }
@@ -108,19 +70,6 @@ if ($id) {
 } else {
     print "<p>ID no proporcionado o inválido.</p>\n";
 }
-
-print<<HTML;
-                <!--BOTONES-->
-                <br>
-                <div class="botones" style="justify-content: center;">
-                    <a href="lista.pl" class="btn-accion btn-crear">Volver a Lista</a>
-                    <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
-                </div>
-            </div>
-        </div>
-    </body>
-</html>
-HTML
 
 # Subrutina para convertir Markdown a HTML
 sub convertir_markdown_a_html {
