@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Extensión para caracteres especiales -->
+    <meta charset="utf-8">
+    <!-- Fuente de letra -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" type="text/css">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>Eliminar Artículo</title>
+</head>
+<body>
+    <!-- CABECERA -->
+    <header>
+        <a class="logo" href="index.html">Wikipedia</a>
+        <nav>
+            <ul>
+                <li><a href="/index.html">Inicio</a></li>
+                <li><a href="cgi-bin/lista.pl">Ver lista</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!-- CONTENEDOR NUEVA PÁGINA -->
+    <div class="container">
+        <div id="crear-pagina" class="contenedor-nuevapagina" style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
+            <h2>ELIMINANDO UN <span class="textos-rojos">ARTÍCULO</span></h2>
+            <form action="cgi-bin/delete.pl" method="GET" class="formulario-estilizado">
+                <label for="owner">Propietario del artículo:</label>
+                <input type="text" id="owner" name="owner" placeholder="Ingrese el propietario" required>
+                
+                <label for="title">Título del artículo:</label>
+                <input type="text" id="title" name="title" placeholder="Ingrese el título del artículo" required>
+                
+                <input type="submit" value="Eliminar" class="btn-accion btn-crear">
+            </form>
+            <!-- BOTONES -->
+            <br>
+            <div class="botones" style="justify-content: center;">
+                <a href="lista.pl" class="btn-accion btn-crear">Volver a Lista</a>
+                <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

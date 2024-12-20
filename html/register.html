@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Registrar Usuario</title>
+</head>
+<body>
+    <h1>Registrar Usuario</h1>
+    <form action="/cgi-bin/register.pl" method="POST">
+        <label for="userName">Usuario:</label>
+        <input type="text" id="userName" name="userName" required>
+        <br>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <label for="firstName">Nombres:</label>
+        <input type="text" id="firstName" name="firstName" required>
+        <br>
+        <label for="lastName">Apellidos:</label>
+        <input type="text" id="lastName" name="lastName" required>
+        <br>
+        <input type="submit" value="Registrar">
+    </form>
+</body>
+</html>
