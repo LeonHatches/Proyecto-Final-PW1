@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Artículos</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- CABECERA -->
+    <header>
+        <a class="logo" href="/index.html">Wikipedia</a>
+        <nav>
+            <ul>
+                <li><a href="/index.html">Inicio</a></li>
+                <li><a href="/nuevo.html">Nueva Página</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <div class="contenedor-nuevapagina">
+            <h2>LISTA DE <span class="textos-rojos">PÁGINAS</span></h2>
+
+            <div id="status" style="text-align: center; margin: 20px 0;">Cargando artículos...</div>
+
+            <!-- Tabla para mostrar la lista -->
+            <table id="tabla-lista" class="tabla-markdown" style="display: none; width: 100%;">
+                <thead>
+                    <tr>
+                        <th><h2>ID</h2></th>
+                        <th><h2>Título</h2></th>
+                        <th><h2>Acciones</h2></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filas dinámicas se insertarán aquí automáticamente con el script js -->
+                </tbody>
+            </table>
+
+            <!-- Botones de navegación -->
+            <br>
+            <div class="botones" style="justify-content: center;">
+                <a href="/nuevo.html" class="btn-accion btn-crear">Crear página</a>
+                <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para cargar datos desde lista.pl -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const statusDiv = document.getElementById("status");
+            const tablaLista = document.getElementById("tabla-lista");
+            const tbody = tablaLista.querySelector("tbody");
+
+            // Solicitar datos al CGI lista.pl
+            fetch('/cgi-bin/lista.pl?usuario=nombreUsuario')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al cargar los datos.");
+                    }
+                    return response.text(); // Obtener respuesta como texto.
+                })
+                .then(xmlString => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+                    // Obtener elementos del XML
+                    const articles = xmlDoc.getElementsByTagName("article");
+
+                    if (articles.length === 0) {
+                        statusDiv.textContent = "No hay artículos disponibles.";
+                        return;
+                    }
+
+                    // Generar filas dinámicamente
+                    for (let i = 0; i < articles.length; i++) {
+                        const id = articles[i].getElementsByTagName("id")[0].textContent;
+                        const title = articles[i].getElementsByTagName("title")[0].textContent;
+
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td style="text-align: center;">${id}</td>
+                            <td>${title}</td>
+                            <td style="justify-content: center;" class="botones">
+                                <a href="ver.pl?id=${id}" class="btn-accion btn-gris">V</a>
+                                <a href="editor.pl?id=${id}" class="btn-accion btn-gris">E</a>
+                                <a href="eliminar.pl?id=${id}" class="btn-accion btn-crear">X</a>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    }
+
+                    // Mostrar tabla y ocultar estado
+                    tablaLista.style.display = "table";
+                    statusDiv.style.display = "none";
+                })
+                .catch(error => {
+                    statusDiv.textContent = "Error al cargar los artículos.";
+                    console.error(error);
+                });
+        });
+    </script>
+</body>
+
+</html>
