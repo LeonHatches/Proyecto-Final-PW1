@@ -45,7 +45,7 @@ $dbh->do("SET NAMES utf8mb4");
 # Generar respuesta XML
 print "<articles>\n";
 
-if ($direccion eq "login") {
+if (defined $direccion && $direccion eq "login") {
 
     my $userName = $cgi->param('owner');
 
@@ -55,6 +55,7 @@ if ($direccion eq "login") {
     $sth->execute($userName);
 
     mostrar($sth);
+    $sth->finish();
 
 } else {
 
@@ -64,8 +65,6 @@ if ($direccion eq "login") {
     $sth->execute();
 
     mostrar($sth);
-}
-
     $sth->finish();
 }
 
@@ -75,13 +74,14 @@ $dbh->disconnect();
 
 
 sub mostrar {
-    my $sth = $_;
+    my ($sth) = @_;
 
     while (my ($owner, $title) = $sth->fetchrow_array) {
-        print <<XML;
+        print<<XML;
     <article>
         <owner>$owner</owner>
         <title>$title</title>
     </article>
 XML
+    }
 }

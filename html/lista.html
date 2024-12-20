@@ -19,7 +19,7 @@
         <!--CSS-->
         <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
 
-        <title>Iniciar Sesión</title>
+        <title>Lista</title>
     </head>
 
     <body>
@@ -36,7 +36,9 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <div class="container">
-            <div class="contenedor-nuevapagina">
+            <div id="contenedorForm" class="contenedor-nuevapagina"
+                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
+
                 <h2>LISTA DE <span class="textos-rojos">PÁGINAS</span></h2>
 
                 <div id="status" style="text-align: center; margin: 20px 0;">Cargando artículos...</div>
@@ -45,7 +47,6 @@
                 <table id="tabla-lista" class="tabla-markdown" style="display: none; width: 100%;">
                     <thead>
                         <tr>
-                            <th><h2>ID</h2></th>
                             <th><h2>Título</h2></th>
                             <th><h2>Acciones</h2></th>
                         </tr>
@@ -72,7 +73,7 @@
                 const tbody = tablaLista.querySelector("tbody");
 
                 // Solicitar datos al CGI lista.pl
-                fetch('/cgi-bin/lista.pl?usuario=nombreUsuario')
+                fetch('/cgi-bin/lista.pl?direccion=offline')
                     .then(response => {
                         if (!response.ok) {
                             throw new Error("Error al cargar los datos.");
@@ -93,17 +94,16 @@
 
                         // Generar filas dinámicamente
                         for (let i = 0; i < articles.length; i++) {
-                            const id = articles[i].getElementsByTagName("id")[0].textContent;
+                            const owner = articles[i].getElementsByTagName("owner")[0].textContent;
                             const title = articles[i].getElementsByTagName("title")[0].textContent;
 
                             const row = document.createElement("tr");
                             row.innerHTML = `
-                                <td style="text-align: center;">${id}</td>
                                 <td>${title}</td>
                                 <td style="justify-content: center;" class="botones">
-                                    <a href="ver.pl?id=${id}" class="btn-accion btn-gris">V</a>
-                                    <a href="editor.pl?id=${id}" class="btn-accion btn-gris">E</a>
-                                    <a href="eliminar.pl?id=${id}" class="btn-accion btn-crear">X</a>
+                                    <a href="ver.pl?id=${owner}" class="btn-accion btn-gris">V</a>
+                                    <a href="editor.pl?id=${owner}" class="btn-accion btn-gris">E</a>
+                                    <a href="eliminar.pl?id=${owner}" class="btn-accion btn-crear">X</a>
                                 </td>
                             `;
                             tbody.appendChild(row);
