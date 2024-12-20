@@ -1,4 +1,5 @@
-#!/usr/bin/perl
+#!/Strawberry/perl/bin/perl.exe
+#/usr/bin/perl
 
 # Modulos
 use strict;
@@ -6,7 +7,6 @@ use warnings;
 use CGI;
 use DBI;
 use utf8;
-use Encode;
 
 # CGI
 my $cgi = CGI->new;
@@ -23,40 +23,28 @@ my $texto;
 #-----------------------------------------------------------------
 
 #Configuración de conexión
-my $database = 'wikipweb1';
-my $hostname = 'localhost';
+my $database = "wikipweb1";
+my $hostname = "localhost";
 my $port = 3306;
-my $user = 'cgi_user';
-my $password = '1234567890';
+my $user = "root";
+my $password = 1234567890;
 
 #DSN de conexión
 my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
 
 #Conexión a la DB
-my $ dbh = DBI->connect($dsn, $user, $password, {
+my $dbh = DBI->connect($dsn, $user, $password, {
     RaiseError => 1,
     PrintError => 0,
-    AutoCommit => 1,
-    mysql_enable_utf8mb4 => 1
+    mysql_enable_utf8 => 1,
 });
-
-$dbh->do("SET NAMES utf8mb4");
 
 #-----------------------------------------------------------------
 
 print<<HTML;
 <!DOCTYPE html>
 <html>
-
     <head>
-        <!--Extensión para caracteres especiales-->
-        <meta charset="utf-8">
-
-        <!--fuente de letra-->
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-              rel="stylesheet"
-              type="text/css">
-
         <!--fuente de letra-->
         <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
@@ -65,34 +53,34 @@ print<<HTML;
 
         <!--CSS-->
         <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
-
-        <title>CONEXIÓN</title>
+        
+        <title>Conectar</title>
     </head>
     
     <body>
-
         <!--CABECERA-->
-        
-        <header> <a class="logo" href="/index.html">Wikipedia</a>
-          <nav>
-            <ul>
-              <li><a href="/index.html">Inicio</a></li>
-              <li><a href="lista.pl">Ver lista</a></li>
-            </ul>
-          </nav>
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="index.html">INICIO</a></li>
+                    <li><a href="./lista.pl">LISTA</a></li>
+                </ul>
+            </nav>
         </header>
 
-        <!--CONTENEDOR NUEVA PÁGINA-->
-        <div class="container">
-            <div id="crear-pagina" class="contenedor-nuevapagina"
-                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
-                <h2>CONECTANDO CON LA <span class="textos-rojos">PÁGINA</span></h2>   
+        <!--CAJA DE TITULO-->
+        <div>
+            PAGINA EN PROCESO...
+        </div>
+
+        <!--CREACION DE PAGINA-->
+        <div>   
 HTML
 
 if ($dbh) {
     
-    $titulo = $cgi->param("titulo");
-    $texto  = $cgi->param("texto");
+    $titulo = $cgi->param('titulo');
+    $texto  = $cgi->param('texto');
 
     if ($direccion eq 'nuevo')
     {
@@ -100,7 +88,7 @@ if ($dbh) {
         $sth = $dbh->prepare($consulta);
         $sth->execute($titulo, $texto);
 
-        print "<p>El contenido fue agregado con éxito.</p>";
+        print "<p>El contenido fue agregado con éxito</p>";
     
     } elsif ($direccion eq 'editor') {
         
@@ -113,24 +101,19 @@ if ($dbh) {
         print "<p>El contenido fue modificado con éxito.</p>";
 
     } else {
-        print "<p>Error en la información de entrada.</p>";
+        print "<p>Error información de entrada.</p>";
     }
 
     $sth->finish();
     $dbh->disconnect();
 
 } else {
-    print "\t    <p>No se pudo conectar a la base de datos.</p>\n";
+    print "\t    <p class='error'>No se pudo conectar a la base de datos.</p>\n";
 }
 
 print<<HTML;
-                <!--BOTONES-->
-                <br>
-                <div class="botones" style="justify-content: center;">
-                    <a href="lista.pl" class="btn-accion btn-crear">Volver a Lista</a>
-                    <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
-                </div>
-            </div>
+            <a href="lista.pl">Volver a Lista</a>
+            <a href="index.html">Volver al Inicio</a>
         </div>
     </body>
 </html>

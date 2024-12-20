@@ -1,32 +1,37 @@
-#!/usr/bin/perl
+#!/Strawberry/perl/bin/perl.exe
+#/usr/bin/perl
+
 use strict;
 use warnings;
 use CGI;
 use utf8;
 use DBI;
 
+# CGI
 my $cgi = CGI->new;
-print $cgi->header('text/xml;charset=UTF-8');
+print $cgi->header('application/xml');
+      $cgi->charset('UTF-8');
+      
 print "<?xml version='1.0' encoding='utf-8'?>\n";
 
-
-my $usuario = $cgi->param('usuario');
+# Verificar su procedencia
+my $direccion = $cgi->param('direccion');
 
 # Configuración de conexión
-my $database = 'wikipweb1';
-my $hostname = 'localhost';
-my $port = 3306;
-my $user = 'cgi_user';
-my $password = '1234567890';
+my $db = 'wikipweb1';
+my $db_host = 'localhost';
+my $db_port = 3306;
+my $db_user = 'root';
+my $db_password = '1234567890';
 
 # DSN de conexión
-my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
+my $dsn = "DBI:mysql:database=$db;host=$db_host;port=$db_port";
 
 # Conexión a la base de datos
 my $dbh = DBI->connect(
     $dsn, 
-    $user, 
-    $password, 
+    $db_user, 
+    $db_password, 
     {
         RaiseError => 1,
         PrintError => 0,
@@ -40,25 +45,43 @@ $dbh->do("SET NAMES utf8mb4");
 # Generar respuesta XML
 print "<articles>\n";
 
-if (defined $usuario) {
-    # Consultar artículos según el propietario
-    my $sql = "SELECT id, titulo FROM wiki WHERE owner = ?";
-    my $sth = $dbh->prepare($sql);
-    $sth->execute($usuario);
+if ($direccion eq "login") {
 
-    while (my ($id, $titulo) = $sth->fetchrow_array) {
-        print <<XML;
-    <article>
-        <id>$id</id>
-        <title>$titulo</title>
-    </article>
-XML
-    }
+    my $userName = $cgi->param('owner');
+
+    # Consultar artículos según el propietario
+    my $sql = "SELECT owner, title FROM Articles WHERE owner = ?";
+    my $sth = $dbh->prepare($sql);
+    $sth->execute($userName);
+
+    mostrar($sth);
+
+} else {
+
+     # Consultar todos los artículos
+    my $sql = "SELECT owner, title FROM Articles";
+    my $sth = $dbh->prepare($sql);
+    $sth->execute();
+
+    mostrar($sth);
+}
 
     $sth->finish();
 }
 
-print "</articles>\n";
+print "</articles>";
 
 $dbh->disconnect();
 
+
+sub mostrar {
+    my $sth = $_;
+
+    while (my ($owner, $title) = $sth->fetchrow_array) {
+        print <<XML;
+    <article>
+        <owner>$owner</owner>
+        <title>$title</title>
+    </article>
+XML
+}
