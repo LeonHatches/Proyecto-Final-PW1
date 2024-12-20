@@ -1,58 +1,35 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use DBI;
 use CGI;
+use DBI;
 
-# Establecer la conexión con la base de datos
-my $dbh = DBI->connect("DBI:mysql:database=wikipweb1;host=localhost", "cgi_user", "1234567890", {'RaiseError' => 1});
+my $cgi = CGI->new;
+print $cgi->header('application/xml; charset=utf-8');
 
-# Crear un objeto CGI
-my $q = CGI->new;
+my $userName  = $cgi->param('userName');
+my $password  = $cgi->param('password');
+my $firstName = $cgi->param('firstName');
+my $lastName  = $cgi->param('lastName');
 
-# Obtener los parámetros de entrada
-my $user = $q->param('userName');
-my $password = $q->param('password');
-my $lastName = $q->param('lastName');
-my $firstName = $q->param('firstName');
+if ($userName && $password && $firstName && $lastName) {
+    my $dsn = "DBI:mysql:database=wikipweb1;host=localhost;port=3306";
+    my $dbh = DBI->connect($dsn, 'cgi_user', '1234567890', { RaiseError => 1, mysql_enable_utf8 => 1 });
 
-# Verificar si faltan parámetros
-if (!$user || !$password || !$lastName || !$firstName) {
-    print $q->header('text/xml');
-    print "<?xml version='1.0' encoding='utf-8'?>\n";
-    print "<response>\n";
-    print "<status>error</status>\n";
-    print "<message>Faltan parámetros.</message>\n";
-    print "</response>\n";
-    exit;
+    my $sth = $dbh->prepare("INSERT INTO Users (userName, password, firstName, lastName) VALUES (?, ?, ?, ?)");
+    if ($sth->execute($userName, $password, $firstName, $lastName)) {
+        print <<"XML";
+<?xml version='1.0' encoding='utf-8'?>
+<user>
+  <owner>$userName</owner>
+  <firstName>$firstName</firstName>
+  <lastName>$lastName</lastName>
+</user>
+XML
+    } else {
+        print "<?xml version='1.0' encoding='utf-8'?>\n<user></user>";
+    }
+    $dbh->disconnect();
+} else {
+    print "<?xml version='1.0' encoding='utf-8'?>\n<user></user>";
 }
-
-# Comprobar si el usuario ya existe
-my $sth = $dbh->prepare("SELECT * FROM Users WHERE userName = ?");
-$sth->execute($user);
-my $existing_user = $sth->fetchrow_arrayref;
-
-if ($existing_user) {
-    print $q->header('text/xml');
-    print "<?xml version='1.0' encoding='utf-8'?>\n";
-    print "<response>\n";
-    print "<status>error</status>\n";
-    print "<message>El usuario ya existe.</message>\n";
-    print "</response>\n";
-    exit;
-}
-
-# Insertar el nuevo usuario en la base de datos
-my $insert_sth = $dbh->prepare("INSERT INTO Users (userName, password, lastName, firstName) VALUES (?, ?, ?, ?)");
-$insert_sth->execute($user, $password, $lastName, $firstName);
-
-# Devolver el resultado en formato XML
-print $q->header('text/xml');
-print "<?xml version='1.0' encoding='utf-8'?>\n";
-print "<response>\n";
-print "<status>success</status>\n";
-print "<message>Usuario registrado exitosamente.</message>\n";
-print "</response>\n";
-
-# Cerrar la conexión
-$dbh->disconnect;
