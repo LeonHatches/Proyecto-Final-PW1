@@ -1,5 +1,4 @@
-#!/Strawberry/perl/bin/perl.exe
-#/usr/bin/perl
+#!/usr/bin/perl
 
 # Modulos
 use strict;
@@ -27,7 +26,7 @@ my $lastName = $cgi->param('lastName');
 my $database = 'wikipweb1';
 my $hostname = 'localhost';
 my $port = 3306;
-my $user = 'root';
+my $user = 'cgi_user';
 my $password = '1234567890';
 
 #DSN de conexión

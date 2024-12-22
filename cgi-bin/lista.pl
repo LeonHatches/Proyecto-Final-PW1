@@ -1,5 +1,4 @@
-#!/Strawberry/perl/bin/perl.exe
-#/usr/bin/perl
+#!/usr/bin/perl
 
 use strict;
 use warnings;
@@ -21,7 +20,7 @@ my $direccion = $cgi->param('direccion');
 my $db = 'wikipweb1';
 my $db_host = 'localhost';
 my $db_port = 3306;
-my $db_user = 'root';
+my $db_user = 'cgi_user';
 my $db_password = '1234567890';
 
 # DSN de conexión
