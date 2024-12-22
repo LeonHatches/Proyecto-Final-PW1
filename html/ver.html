@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <!--Extensión para caracteres especiales-->
+        <meta charset="utf-8">
+
+        <!--fuente de letra-->
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+              rel="stylesheet"
+              type="text/css">
+
+        <!--fuente de letra-->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+            rel="stylesheet"
+            type="text/css">
+
+        <!--CSS-->
+        <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
+
+        <title>Visualizar</title>
+    </head>
+
+    <body>
+        <!-- CABECERA -->
+        <header>
+            <a class="logo" href="/index.html">Wikipedia</a>
+            <nav>
+                <ul>
+                    <li><a href="/index.html">Inicio</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="container">
+            <div id="contenedorVer" class="contenedor-nuevapagina"
+                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px; text-align: left;">
+                <p>Cargando ...</p>
+            </div>
+        </div>
+
+        <!-- Script para cargar datos desde lista.pl -->
+        <script>
+
+            document.addEventListener("DOMContentLoaded", function () {
+
+                var title = "";
+                var owner = "";
+
+                // Obtiene los parametros enviados en el html
+                const param = new URLSearchParams(window.location.search);
+                owner = param.get('owner');
+                title = param.get('title');
+                
+                // Llama al CGI con los parámetros necesarios
+                fetch(`/cgi-bin/ver.pl?owner=${owner}&title=${title}`)
+                    .then(response => response.text())
+                    .then(htmlContent => {
+                        
+                        const contenedorVer = document.getElementById('contenedorVer');
+                        contenedorVer.innerHTML = htmlContent;
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar el artículo:', error);
+                        const contenedorVer = document.getElementById('contenedorVer');
+                        contenedorVer.innerHTML = '<p>Error al cargar el contenido del artículo.</p>';
+                    });
+            });
+        </script>
+    </body>
+
+</html>

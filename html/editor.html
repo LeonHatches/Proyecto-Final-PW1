@@ -14,7 +14,7 @@
 	    <!-- CSS -->
 	    <link rel="stylesheet" type="text/css" href="/css/style.css">
 
-	    <title>Crear Página</title>
+	    <title>Editar Página</title>
 	</head>
 
 	<body>
@@ -32,19 +32,15 @@
 
 	    <!-- FORMULARIO PARA CREAR NUEVA PÁGINA -->
 	    <div class="container">
-			<div id="contenedorForm" class="contenedor-nuevapagina"
+			<div class="contenedor-nuevapagina"
 			style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
 
-	            <h2>CREAR NUEVA <span class="textos-rojos">PÁGINA</span></h2>
+				<div id="mensaje"></div>
+	            <h2>EDITANDO LA <span class="textos-rojos">PÁGINA</span></h2>
 
 	            <!-- FORMULARIO -->
-	            <div class="formulario-estilizado">
-	                <label for="title">Título:</label>
-	                <input type="text" id="title" name="title" placeholder="Ingrese el título aquí">
-	                <label for="text">Contenido:</label>
-	                <textarea id="text" name="text" placeholder="Escriba el contenido aquí"></textarea>
-
-	                <button onclick="crearPagina()" class="btn-accion btn-crear">Enviar</button>
+	            <div id="contenedorForm" class="formulario-estilizado">
+	            	Cargando ...
 	            </div>
 	        </div>
 	    </div>
@@ -125,38 +121,76 @@
 	    </div>
 
 	    <script>
-	        function crearPagina() {
-	            const titulo = document.getElementById('title').value;
-	            const contenido = document.getElementById('text').value;
+	    	let title = "";
+            let owner = "";
 
-                var owner = "";
+	    	// Obtiene los parametros enviados en el html
+            const param = new URLSearchParams(window.location.search);
+            owner = param.get('owner');
+            title = param.get('title');
 
-                // Obtiene los parametros enviados en el html
-                const param = new URLSearchParams(window.location.search);
-                owner = param.get('owner');
+	        document.addEventListener("DOMContentLoaded", function () {
 
-	            fetch(`/cgi-bin/nuevo.pl?owner=${owner}&title=${encodeURIComponent(titulo)}&text=${encodeURIComponent(contenido)}`)
+	            fetch(`/cgi-bin/article.pl?owner=${owner}&title=${encodeURIComponent(title)}`)
 	                .then(response => response.text())
 	                .then(xmlText => {
 	                    const dom = new DOMParser();
 	                    const xml = dom.parseFromString(xmlText, 'application/xml');
 
-	                    const title = xml.getElementsByTagName('title')[0].textContent;
+						const title = xml.getElementsByTagName('title')[0].textContent;
 	                    const text = xml.getElementsByTagName('text')[0].textContent;
-
-	                    if (title == '' || text == '') {
+	                    
+	                    if (!title || !text) {
 
 	                    	const mensaje = document.getElementById('mensaje');
-	                        mensajeDiv.innerHTML = `<p class="error">No se pudo crear la página</p>`;
+	                        mensaje.innerHTML = `<p class="error">No se pudo editar la página</p>`;
 
 	                    } else {
 	                        
 	                        const contenedorForm = document.getElementById('contenedorForm');
 	                        contenedorForm.innerHTML =
 	                            `
-	                                <h2>PÁGINA CREADA <span class="textos-rojos">EXITOSAMENTE</span></h2>
-	                                <p><strong>Título:</strong> ${title}</p>
-	                                <p><strong>Texto:</strong>${text}</p>
+                	                <label for="title">Título:</label>
+					                <input type="text" id="title" name="title" placeholder="Ingrese el título aquí" value="${title}" readonly>
+					                <label for="text">Contenido:</label>
+					                <textarea id="text" name="text" placeholder="Escriba el contenido aquí">${text}</textarea>
+
+					                <button onclick="editarPagina()" class="btn-accion btn-crear">Enviar</button>
+	                            `;
+	                    }
+	                })
+	                .catch(error => {
+	                    console.log("Error al conectar con el CGI:", error);
+	                    const contenedorForm = document.getElementById('contenedorForm');
+	                    contenedorForm.innerHTML = '<p>No se pudo conectar con la página...</p>';
+	                })
+	        })
+
+	        function editarPagina ()  {
+	            let texto = document.getElementById('text').value;
+
+	            fetch(`/cgi-bin/editor.pl?owner=${owner}&title=${encodeURIComponent(title)}&text=${encodeURIComponent(texto)}`) 
+	                .then(response => response.text())
+	                .then(xmlText => {
+	                    const dom = new DOMParser();
+	                    const xml = dom.parseFromString(xmlText, 'application/xml');
+
+						const titulo = xml.getElementsByTagName('title')[0].textContent;
+	                    texto = xml.getElementsByTagName('text')[0].textContent;
+	                    
+	                    if ( !titulo || !texto ) {
+
+	                    	const mensaje = document.getElementById('mensaje');
+	                        mensaje.innerHTML = `<p class="error">No se pudo editar la página</p>`;
+
+	                    } else {
+	                        
+	                        const contenedorForm = document.getElementById('contenedorForm');
+	                        contenedorForm.innerHTML =
+	                            `
+	                                <h2>PÁGINA EDITADA <span class="textos-rojos">EXITOSAMENTE</span></h2>
+	                                <p><strong>Título:</strong> ${titulo}</p>
+	                                <p><strong>Texto:</strong>${texto}</p>
 	                                <div style="justify-content: center;" class="botones">
 										<a href='lista.html?direccion=login&owner=${owner}' class="btn-accion btn-crear">Ver Mi Lista</a>
 									</div>
@@ -167,7 +201,7 @@
 	                    console.log("Error al conectar con el CGI:", error);
 	                    const contenedorForm = document.getElementById('contenedorForm');
 	                    contenedorForm.innerHTML = '<p>No se pudo conectar con la página...</p>';
-	                });
+	                })
 	        }
 	    </script>
 	</body>

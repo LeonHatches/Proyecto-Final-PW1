@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+	    <!-- Extensión para caracteres especiales -->
+	    <meta charset="utf-8">
+
+	    <!-- Fuente de letra -->
+	    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"
+	        type="text/css">
+	    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"
+	        type="text/css">
+
+	    <!-- CSS -->
+	    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+	    <title>Eliminar Página</title>
+	</head>
+
+    <body>
+        <!-- CABECERA -->
+        <header>
+            <a class="logo" href="/index.html">Wikipedia</a>
+            <nav>
+                <ul>
+                    <li><a href="/index.html">Inicio</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="container">
+            <div id="contenedorEliminar" class="contenedor-nuevapagina"
+                style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
+
+                <h2>ELIMINANDO <span class="textos-rojos">PÁGINA</span></h2>
+
+                <div style="text-align: center; margin: 20px 0;">Cargando...</div>
+
+                <!-- Botones de navegación -->
+                <br>
+                <div class="botones" style="justify-content: center;">
+                    <a href="/index.html" class="btn-accion btn-gris">Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+
+	    <script>
+
+            document.addEventListener("DOMContentLoaded", function () {
+
+            	const contenedorEliminar = document.getElementById("contenedorEliminar");
+
+                var user = "";
+                var titulo = "";
+
+                // Obtiene los parametros enviados en el html
+                const param = new URLSearchParams(window.location.search);
+                user = param.get('owner');
+                titulo = param.get('title');
+                
+
+                // Solicitar datos al CGI lista.pl
+                fetch(`/cgi-bin/eliminar.pl?owner=${user}&title=${encodeURIComponent(titulo)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error al cargar los datos.");
+                        }
+                        return response.text(); // Obtener respuesta como texto.
+                    })
+                    .then(xmlText => {
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
+                        // Generar filas dinámicamente
+                        const owner = xmlDoc.getElementsByTagName("owner")[0].textContent;
+                        const title = xmlDoc.getElementsByTagName("title")[0].textContent;
+                        
+                        if ( !owner || !title ) {
+	                        contenedorEliminar.innerHTML = `
+	                        <p>No se pudo editar la página</p>
+			                <div style="justify-content: center;" class="botones">
+									<a href='lista.html?direccion=login&owner=${user}' class="btn-accion btn-crear">Volver a mi Lista</a>
+							</div>
+	                        `;
+
+	                    } else {
+	                    	contenedorEliminar.innerHTML =
+                            `
+                                <h2>PÁGINA ELIMINADA <span class="textos-rojos">EXITOSAMENTE</span></h2>
+                                <p><strong>Usuario:</strong>${owner}</p>
+                                <p><strong>Titulo:</strong>${title}</p>
+                                <div style="justify-content: center;" class="botones">
+									<a href='lista.html?direccion=login&owner=${owner}' class="btn-accion btn-crear">Ver Mi Lista</a>
+								</div>
+	                        `;
+	                    }
+                        
+                    })
+                    .catch(error => {
+	                    console.log("Error al conectar con el CGI:", error);
+	                    const contenedorEliminar = document.getElementById('contenedorEliminar');
+	                    contenedorEliminar.innerHTML = '<p>No se pudo conectar con la página...</p>';
+	                });
+            });
+	    </script>
+	</body>
+	
+</html>

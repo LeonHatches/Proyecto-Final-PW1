@@ -6,16 +6,21 @@ use CGI;
 use utf8;
 use DBI;
 
+
+# Encabezado XML
 my $cgi = CGI->new;
 print $cgi->header('application/xml');
-      $cgi->charset('UTF-8');
-      
 print "<?xml version='1.0' encoding='utf-8'?>\n";
 
-# Obtener los parámetros
-my $title = $cgi->param('title');
+# Obtener parámetros
 my $owner = $cgi->param('owner');
-my $text = $cgi->param('text');
+my $title = $cgi->param('title');
+
+# Verificar que los parámetros sean válidos
+if (!$owner || !$title) {
+    XMLvacio();
+    exit;
+}
 
 #-----------------------------------------------------------------
 
@@ -44,42 +49,38 @@ my $dbh = DBI->connect(
 
 $dbh->do("SET NAMES utf8mb4");
 
-#------------ -----------------------------------------------------
+#-----------------------------------------------------------------
 
-# Verificar que se recibieron los datos necesarios
-if (defined $owner and defined $title and defined $text) {
 
-    # Comprobar si ya existe un artículo con el mismo título y propietario
-    my $check_sql = "UPDATE Articles SET text = ? WHERE title = ? AND owner = ?";
-    my $check_sth = $dbh->prepare($check_sql);
-    $check_sth->execute($text, $title, $owner);
+# Consultar el artículo
+my $sth = $dbh->prepare("SELECT text FROM Articles WHERE owner = ? AND title = ?");
+$sth->execute($owner, $title);
 
-	editar($title, $text);
-    $check_sth->finish;
-
-} else {
-     XMLvacio();
-}
-
-$dbh->disconnect;
-
-# Subrutina para imprimir el XML de éxito
-sub editar {
-    my ($title, $text) = @_;
+# Obtener resultados y generar XML
+if (my $row = $sth->fetchrow_hashref) {
+    my $text = $row->{text};
     print<<XML;
 <article>
-    <title>$title</title>
-    <text>$text</text>
+  <owner>$owner</owner>
+  <title>$title</title>
+  <text>$text</text>
 </article>
 XML
+
+} else {
+  XMLvacio();
 }
 
-# Subrutina para imprimir el XML vacio
+# Liberar recursos y cerrar conexión
+$sth->finish();
+$dbh->disconnect();
+
 sub XMLvacio {
-    print<<XML;
+  print<<XML;
 <article>
-    <title></title>
-    <text></text>
+  <owner></owner>
+  <title></title>
+  <text></text>
 </article>
 XML
 }

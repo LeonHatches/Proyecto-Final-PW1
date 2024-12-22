@@ -5,17 +5,17 @@ use warnings;
 use CGI;
 use utf8;
 use DBI;
+use URI::Escape;
 
 my $cgi = CGI->new;
 print $cgi->header('application/xml');
       $cgi->charset('UTF-8');
-      
 print "<?xml version='1.0' encoding='utf-8'?>\n";
 
 # Obtener los parámetros
 my $title = $cgi->param('title');
-my $owner = $cgi->param('owner');
 my $text = $cgi->param('text');
+my $owner = $cgi->param('owner');
 
 #-----------------------------------------------------------------
 
@@ -42,29 +42,38 @@ my $dbh = DBI->connect(
     }
 ) or die "Error al conectar a la base de datos MariaDB: $DBI::errstr\n";
 
-$dbh->do("SET NAMES utf8mb4");
 
-#------------ -----------------------------------------------------
+#-----------------------------------------------------------------
 
 # Verificar que se recibieron los datos necesarios
 if (defined $owner and defined $title and defined $text) {
 
     # Comprobar si ya existe un artículo con el mismo título y propietario
-    my $check_sql = "UPDATE Articles SET text = ? WHERE title = ? AND owner = ?";
+    my $check_sql = "SELECT * FROM Articles WHERE title = ? AND owner = ?";
     my $check_sth = $dbh->prepare($check_sql);
-    $check_sth->execute($text, $title, $owner);
+    $check_sth->execute($title, $owner);
 
-	editar($title, $text);
-    $check_sth->finish;
+    if ($check_sth->fetchrow_array) {
+        XMLvacio();
+    } else {
+        # Insertar un nuevo artículo
+        my $sql = "INSERT INTO Articles (owner, title, text) VALUES (?, ?, ?)";
+        my $sth = $dbh->prepare($sql);
+        $sth->execute($owner, $title, $text);
 
+        # Finalizar la operación
+        $sth->finish;
+        $dbh->disconnect;
+
+        # Mostrar éxito
+        successLogin($title, $text);
+    }
 } else {
      XMLvacio();
 }
 
-$dbh->disconnect;
-
 # Subrutina para imprimir el XML de éxito
-sub editar {
+sub successLogin {
     my ($title, $text) = @_;
     print<<XML;
 <article>
