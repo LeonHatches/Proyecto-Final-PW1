@@ -1,70 +1,93 @@
-#!/usr/bin/perl
+#!/Strawberry/perl/bin/perl.exe
+#/usr/bin/perl
+
 use strict;
 use warnings;
 use CGI;
 use DBI;
 use utf8;
 
-my $cgi  = CGI->new;
-print $cgi->header('text/xml;charset=UTF-8');
+my $cgi = CGI->new;
+print $cgi->header('application/xml');
+      $cgi->charset('UTF-8');
+      
 print "<?xml version='1.0' encoding='utf-8'?>\n";
 
 # Parámetros CGI
-my $username = $cgi->param('user');
-my $passw = $cgi->param('password');
-my $id = $cgi->param('id');
+my $owner = $cgi->param('owner');
+my $title = $cgi->param('title');
 
-if (defined $username && defined $passw && defined $id) {
-    
-    my $database = 'wikipweb1';
-    my $hostname = 'localhost';
-    my $port = 3306;
-    my $user = 'root';
-    my $password = '1234567890';
+#-----------------------------------------------------------------
 
-    my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
-    my $dbh = DBI->connect($dsn, $user, $password, {RaiseError => 1, PrintError => 0, mysql_enable_utf8 => 1});
+# Configuración de conexión
+my $db = 'wikipweb1';
+my $db_host = 'localhost';
+my $db_port = 3306;
+my $db_user = 'root';
+my $db_password = '1234567890';
 
-    # Verificar cuenta del usuario
-    if (verificarCuenta($dbh, $username, $passw)) {
+# DSN de conexión
+my $dsn = "DBI:mysql:database=$db;host=$db_host;port=$db_port";
+
+# Conexión a la base de datos
+my $dbh = DBI->connect(
+    $dsn, 
+    $db_user, 
+    $db_password, 
+    {
+        RaiseError => 1,
+        PrintError => 0,
+        AutoCommit => 1,
+        mysql_enable_utf8mb4 => 1
+    }
+) or die "Error al conectar a la base de datos MariaDB: $DBI::errstr\n";
+
+$dbh->do("SET NAMES utf8mb4");
+
+#----------------------------------------------------------------
+
+if (defined $owner && defined $title) {
+
+    # Comprobar si ya existe un artículo con el mismo título y propietario
+    my $check_sql = "SELECT * FROM Articles WHERE title = ? AND owner = ?";
+    my $check_sth = $dbh->prepare($check_sql);
+    $check_sth->execute($title, $owner);
+
+    if ($check_sth->fetchrow_array) {
         
         #  eliminar el artículo
-        my $sql = "DELETE FROM wiki WHERE id = ?";
+        my $sql = "DELETE FROM Articles WHERE owner = ? AND title = ?";
         my $sth = $dbh->prepare($sql);
-        $sth->execute($id);
+        $sth->execute($owner, $title);
         
-        print "<article>\n";
-        if ($sth->rows > 0) {
-            print "    <id>$id</id>\n";
-            print "    <status>Artículo eliminado correctamente.</status>\n";
-        } else {
-            print "    <id>$id</id>\n";
-            print "    <status>Error: Artículo no encontrado o no eliminado.</status>\n";
-        }
-        print "</article>\n";
-        $sth->finish;
-    } else {
-        # Usuario no válido
-        print "<error>\n";
-        print "    <message>Usuario o contraseña incorrectos.</message>\n";
-        print "</error>\n";
-    }
-    
-    $dbh->disconnect;
-} else {
+        mostrarEliminar($owner, $title);
 
-    print "<error>\n";
-    print "    <message>Faltan parámetros: usuario, contraseña o ID de artículo.</message>\n";
-    print "</error>\n";
+        $sth->finish;
+
+    } else {
+        XMLvacio();
+    }
+} else {
+     XMLvacio();
 }
 
-#verificar la cuenta del usuario
-sub verificarCuenta {
-    my ($dbh, $username, $passw) = @_;
-    my $sql = "SELECT 1 FROM Users WHERE userName = ? AND password = ?";
-    my $sth = $dbh->prepare($sql);
-    $sth->execute($username, $passw);
-    my @row = $sth->fetchrow_array;
-    $sth->finish;
-    return @row ? 1 : 0;
+$dbh->disconnect;
+
+sub XMLvacio {
+    print<<XML;
+<article>
+    <owner></owner>
+    <title></title>
+</article>
+XML
+}
+
+sub mostrarEliminar {
+    my ($owner, $title) = @_;
+    print<<XML;
+<article>
+    <owner>$owner</owner>
+    <title>$title</title>
+</article>
+XML
 }

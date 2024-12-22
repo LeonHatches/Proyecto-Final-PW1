@@ -6,6 +6,7 @@ use warnings;
 use CGI;
 use utf8;
 use DBI;
+use URI::Escape;
 
 my $cgi = CGI->new;
 print $cgi->header('application/xml');

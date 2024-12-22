@@ -30,12 +30,12 @@
 
         <!-- CONTENIDO PRINCIPAL -->
         <div class="container">
-            <div id="contenedorForm" class="contenedor-nuevapagina"
+            <div id="contenedorEliminar" class="contenedor-nuevapagina"
                 style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
 
                 <h2>ELIMINANDO <span class="textos-rojos">PÁGINA</span></h2>
 
-                <div id="status" style="text-align: center; margin: 20px 0;">Cargando...</div>
+                <div style="text-align: center; margin: 20px 0;">Cargando...</div>
 
                 <!-- Botones de navegación -->
                 <br>
@@ -47,6 +47,62 @@
 
 	    <script>
 
+            document.addEventListener("DOMContentLoaded", function () {
+
+            	const contenedorEliminar = document.getElementById("contenedorEliminar");
+
+                var user = "";
+                var titulo = "";
+
+                // Obtiene los parametros enviados en el html
+                const param = new URLSearchParams(window.location.search);
+                user = param.get('owner');
+                titulo = param.get('title');
+                
+
+                // Solicitar datos al CGI lista.pl
+                fetch(`/cgi-bin/eliminar.pl?owner=${user}&title=${encodeURIComponent(titulo)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error al cargar los datos.");
+                        }
+                        return response.text(); // Obtener respuesta como texto.
+                    })
+                    .then(xmlText => {
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
+                        // Generar filas dinámicamente
+                        const owner = xmlDoc.getElementsByTagName("owner")[0].textContent;
+                        const title = xmlDoc.getElementsByTagName("title")[0].textContent;
+                        
+                        if ( !owner || !title ) {
+	                        contenedorEliminar.innerHTML = `
+	                        <p>No se pudo editar la página</p>
+			                <div style="justify-content: center;" class="botones">
+									<a href='lista.html?direccion=login&owner=${user}' class="btn-accion btn-crear">Volver a mi Lista</a>
+							</div>
+	                        `;
+
+	                    } else {
+	                    	contenedorEliminar.innerHTML =
+                            `
+                                <h2>PÁGINA ELIMINADA <span class="textos-rojos">EXITOSAMENTE</span></h2>
+                                <p><strong>Owner:</strong>${owner}</p>
+                                <p><strong>Texto:</strong>${title}</p>
+                                <div style="justify-content: center;" class="botones">
+									<a href='lista.html?direccion=login&owner=${owner}' class="btn-accion btn-crear">Ver Mi Lista</a>
+								</div>
+	                        `;
+	                    }
+                        
+                    })
+                    .catch(error => {
+	                    console.log("Error al conectar con el CGI:", error);
+	                    const contenedorEliminar = document.getElementById('contenedorEliminar');
+	                    contenedorEliminar.innerHTML = '<p>No se pudo conectar con la página...</p>';
+	                });
+            });
 	    </script>
 	</body>
 	
