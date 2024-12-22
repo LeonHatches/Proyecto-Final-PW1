@@ -121,17 +121,17 @@
 	    </div>
 
 	    <script>
+	    	let title = "";
+            let owner = "";
+
+	    	// Obtiene los parametros enviados en el html
+            const param = new URLSearchParams(window.location.search);
+            owner = param.get('owner');
+            title = param.get('title');
+
 	        document.addEventListener("DOMContentLoaded", function () {
-               	
-               	let title = "";
-               	let owner = "";
 
-                // Obtiene los parametros enviados en el html
-                const param = new URLSearchParams(window.location.search);
-                owner = param.get('owner');
-                title = param.get('title');
-
-	            fetch(`/cgi-bin/article.pl?owner=${owner}&title=${title}`)
+	            fetch(`/cgi-bin/article.pl?owner=${owner}&title=${encodeURIComponent(title)}`)
 	                .then(response => response.text())
 	                .then(xmlText => {
 	                    const dom = new DOMParser();
@@ -140,7 +140,7 @@
 						const title = xml.getElementsByTagName('title')[0].textContent;
 	                    const text = xml.getElementsByTagName('text')[0].textContent;
 	                    
-	                    if (title == '' || text == '') {
+	                    if (!title || !text) {
 
 	                    	const mensaje = document.getElementById('mensaje');
 	                        mensaje.innerHTML = `<p class="error">No se pudo editar la página</p>`;
@@ -151,7 +151,7 @@
 	                        contenedorForm.innerHTML =
 	                            `
                 	                <label for="title">Título:</label>
-					                <input type="text" id="title" name="title" placeholder="Ingrese el título aquí" value="${title}">
+					                <input type="text" id="title" name="title" placeholder="Ingrese el título aquí" value="${title}" readonly>
 					                <label for="text">Contenido:</label>
 					                <textarea id="text" name="text" placeholder="Escriba el contenido aquí">${text}</textarea>
 
@@ -165,6 +165,44 @@
 	                    contenedorForm.innerHTML = '<p>No se pudo conectar con la página...</p>';
 	                })
 	        })
+
+	        function editarPagina ()  {
+	            let texto = document.getElementById('text').value;
+
+	            fetch(`/cgi-bin/editor.pl?owner=${owner}&title=${encodeURIComponent(title)}&text=${encodeURIComponent(texto)}`) 
+	                .then(response => response.text())
+	                .then(xmlText => {
+	                    const dom = new DOMParser();
+	                    const xml = dom.parseFromString(xmlText, 'application/xml');
+
+						const titulo = xml.getElementsByTagName('title')[0].textContent;
+	                    texto = xml.getElementsByTagName('text')[0].textContent;
+	                    
+	                    if ( !titulo || !texto ) {
+
+	                    	const mensaje = document.getElementById('mensaje');
+	                        mensaje.innerHTML = `<p class="error">No se pudo editar la página</p>`;
+
+	                    } else {
+	                        
+	                        const contenedorForm = document.getElementById('contenedorForm');
+	                        contenedorForm.innerHTML =
+	                            `
+	                                <h2>PÁGINA EDITADA <span class="textos-rojos">EXITOSAMENTE</span></h2>
+	                                <p><strong>Título:</strong> ${titulo}</p>
+	                                <p><strong>Texto:</strong>${texto}</p>
+	                                <div style="justify-content: center;" class="botones">
+										<a href='lista.html?direccion=login&owner=${owner}' class="btn-accion btn-crear">Ver Mi Lista</a>
+									</div>
+	                            `;
+	                    }
+	                })
+	                .catch(error => {
+	                    console.log("Error al conectar con el CGI:", error);
+	                    const contenedorForm = document.getElementById('contenedorForm');
+	                    contenedorForm.innerHTML = '<p>No se pudo conectar con la página...</p>';
+	                })
+	        }
 	    </script>
 	</body>
 	

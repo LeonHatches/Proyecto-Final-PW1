@@ -9,12 +9,13 @@ use DBI;
 
 my $cgi = CGI->new;
 print $cgi->header('application/xml');
+      $cgi->charset('UTF-8');
 print "<?xml version='1.0' encoding='utf-8'?>\n";
 
 # Obtener los parámetros
 my $title = $cgi->param('title');
 my $text = $cgi->param('text');
-my $owner = $cgi->param('owner'); # El "owner" viene del login.pl
+my $owner = $cgi->param('owner');
 
 #-----------------------------------------------------------------
 
@@ -41,7 +42,6 @@ my $dbh = DBI->connect(
     }
 ) or die "Error al conectar a la base de datos MariaDB: $DBI::errstr\n";
 
-$dbh->do("SET NAMES utf8mb4");
 
 #-----------------------------------------------------------------
 

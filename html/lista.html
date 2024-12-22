@@ -101,7 +101,7 @@
                         // Obtener elementos del XML
                         const articles = xmlDoc.getElementsByTagName("article");
 
-                        if (articles.length == 0) {
+                        if (articles.length === 0) {
                             statusDiv.textContent = "No hay artículos disponibles.";
                             return;
                         }

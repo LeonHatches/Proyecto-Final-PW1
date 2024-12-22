@@ -9,11 +9,14 @@ use DBI;
 
 my $cgi = CGI->new;
 print $cgi->header('application/xml');
+      $cgi->charset('UTF-8');
+      
 print "<?xml version='1.0' encoding='utf-8'?>\n";
 
 # Obtener los parámetros
 my $title = $cgi->param('title');
 my $owner = $cgi->param('owner');
+my $text = $cgi->param('text');
 
 #-----------------------------------------------------------------
 
@@ -42,23 +45,19 @@ my $dbh = DBI->connect(
 
 $dbh->do("SET NAMES utf8mb4");
 
-#-----------------------------------------------------------------
+#------------ -----------------------------------------------------
 
 # Verificar que se recibieron los datos necesarios
-if (defined $owner and defined $text) {
+if (defined $owner and defined $title and defined $text) {
 
     # Comprobar si ya existe un artículo con el mismo título y propietario
-    my $check_sql = "SELECT * FROM Articles WHERE title = ? AND owner = ?";
+    my $check_sql = "UPDATE Articles SET text = ? WHERE title = ? AND owner = ?";
     my $check_sth = $dbh->prepare($check_sql);
-    $check_sth->execute($title, $owner);
+    $check_sth->execute($text, $title, $owner);
 
-    if ($check_sth->fetchrow_array) {
-    	editar($title, $text);
-        $sth->finish;
-       
-    } else {
-        XMLvacio();
-    }
+	editar($title, $text);
+    $check_sth->finish;
+
 } else {
      XMLvacio();
 }
