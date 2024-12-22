@@ -37,12 +37,6 @@ COPY ./html/ /var/www/html
 COPY ./css/ /var/www/html/css
 COPY ./images/ /var/www/html/images
 
-RUN chmod +x /usr/lib/cgi-bin/conexion.pl
-RUN chmod +x /usr/lib/cgi-bin/ver.pl
-RUN chmod +x /usr/lib/cgi-bin/editor.pl
-RUN chmod +x /usr/lib/cgi-bin/eliminar.pl
-RUN chmod +x /usr/lib/cgi-bin/lista.pl
-
 # Copia el archivo de configuración de Apache
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
