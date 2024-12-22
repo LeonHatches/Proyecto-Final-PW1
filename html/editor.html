@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+	    <!-- Extensión para caracteres especiales -->
+	    <meta charset="utf-8">
+
+	    <!-- Fuente de letra -->
+	    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"
+	        type="text/css">
+	    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"
+	        type="text/css">
+
+	    <!-- CSS -->
+	    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+	    <title>Editar Página</title>
+	</head>
+
+	<body>
+
+	    <!-- CABECERA -->
+	    <header>
+	        <a class="logo" href="/index.html">Wikipedia</a>
+	        <nav>
+	            <ul>
+	                <li><a href="/index.html">Inicio</a></li>
+	                <li><a href="/lista.html?direccion=offline">Ver lista</a></li>
+	            </ul>
+	        </nav>
+	    </header>
+
+	    <!-- FORMULARIO PARA CREAR NUEVA PÁGINA -->
+	    <div class="container">
+			<div class="contenedor-nuevapagina"
+			style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
+
+				<div id="mensaje"></div>
+	            <h2>EDITANDO LA <span class="textos-rojos">PÁGINA</span></h2>
+
+	            <!-- FORMULARIO -->
+	            <div id="contenedorForm" class="formulario-estilizado">
+	            	Cargando ...
+	            </div>
+	        </div>
+	    </div>
+
+	    <!-- TABLA DE FUNCIONALIDADES -->
+	    <div class="tabla-markdown-container">
+	        <div class="titulo-funcionalidad">
+	            <h2>Funcionalidades<span class="textos-rojos"> Markdown</span></h2>
+	        </div>
+	        <p>Esta tabla muestra cómo se convierten los elementos de Markdown a HTML y su salida renderizada.</p>
+	        <table class="tabla-markdown">
+	            <thead>
+	                <tr>
+	                    <th>Elemento</th>
+	                    <th>Markdown</th>
+	                    <th>HTML</th>
+	                    <th>Resultado</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <!-- Encabezados -->
+	                <tr>
+	                    <td>Encabezado o heading</td>
+	                    <td>
+	                        # Encabezado 1<br>
+	                        ## Encabezado 2<br>
+	                        ###### Encabezado 6
+	                    </td>
+	                    <td>
+	                        &lt;h1&gt;Encabezado 1&lt;/h1&gt;<br>
+	                        &lt;h2&gt;Encabezado 2&lt;/h2&gt;<br>
+	                        &lt;h6&gt;Encabezado 6&lt;/h6&gt;
+	                    </td>
+	                    <td>
+	                        <h1>Encabezado 1</h1>
+	                        <h2>Encabezado 2</h2>
+	                        <h6>Encabezado 6</h6>
+	                    </td>
+	                </tr>
+
+	                <!-- Estilos de texto -->
+	                <tr>
+	                    <td>Estilos de texto</td>
+	                    <td>
+	                        ***Texto negrita y cursiva***<br>
+	                        **Texto negrita**<br>
+	                        *Texto cursiva*
+	                    </td>
+	                    <td>
+	                        &lt;strong&gt;&lt;em&gt;Texto&lt;/em&gt;&lt;/strong&gt;<br>
+	                        &lt;strong&gt;Texto&lt;/strong&gt;<br>
+	                        &lt;em&gt;Texto&lt;/em&gt;
+	                    </td>
+	                    <td>
+	                        <strong><em>Texto</em></strong><br>
+	                        <strong>Texto</strong><br>
+	                        <em>Texto</em>
+	                    </td>
+	                </tr>
+
+	                <!-- Enlaces -->
+	                <tr>
+	                    <td>Enlaces</td>
+	                    <td>[Texto](https://example.com)</td>
+	                    <td>&lt;a href="https://example.com"&gt;Texto&lt;/a&gt;</td>
+	                    <td><a href="https://example.com">Texto</a></td>
+	                </tr>
+
+	                <!-- Saltos de línea -->
+	                <tr>
+	                    <td>Saltos de línea</td>
+	                    <td>Línea 1<br>Línea 2</td>
+	                    <td>Línea 1&lt;br&gt;Línea 2</td>
+	                    <td>Línea 1<br>Línea 2</td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
+
+	    <script>
+	        document.addEventListener("DOMContentLoaded", function () {
+               	
+               	let title = "";
+               	let owner = "";
+
+                // Obtiene los parametros enviados en el html
+                const param = new URLSearchParams(window.location.search);
+                owner = param.get('owner');
+                title = param.get('title');
+
+	            fetch(`/cgi-bin/article.pl?owner=${owner}&title=${title}`)
+	                .then(response => response.text())
+	                .then(xmlText => {
+	                    const dom = new DOMParser();
+	                    const xml = dom.parseFromString(xmlText, 'application/xml');
+
+						const title = xml.getElementsByTagName('title')[0].textContent;
+	                    const text = xml.getElementsByTagName('text')[0].textContent;
+	                    
+	                    if (title == '' || text == '') {
+
+	                    	const mensaje = document.getElementById('mensaje');
+	                        mensaje.innerHTML = `<p class="error">No se pudo editar la página</p>`;
+
+	                    } else {
+	                        
+	                        const contenedorForm = document.getElementById('contenedorForm');
+	                        contenedorForm.innerHTML =
+	                            `
+                	                <label for="title">Título:</label>
+					                <input type="text" id="title" name="title" placeholder="Ingrese el título aquí" value="${title}">
+					                <label for="text">Contenido:</label>
+					                <textarea id="text" name="text" placeholder="Escriba el contenido aquí">${text}</textarea>
+
+					                <button onclick="editarPagina()" class="btn-accion btn-crear">Enviar</button>
+	                            `;
+	                    }
+	                })
+	                .catch(error => {
+	                    console.log("Error al conectar con el CGI:", error);
+	                    const contenedorForm = document.getElementById('contenedorForm');
+	                    contenedorForm.innerHTML = '<p>No se pudo conectar con la página...</p>';
+	                })
+	        })
+	    </script>
+	</body>
+	
+</html>
