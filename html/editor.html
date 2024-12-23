@@ -32,7 +32,7 @@
 
 	    <!-- FORMULARIO PARA CREAR NUEVA PÁGINA -->
 	    <div class="container">
-			<div class="contenedor-nuevapagina"
+			<div id="contenedorEditor" class="contenedor-nuevapagina"
 			style="margin: 0; border-top-right-radius: 0px; border-top-left-radius: 0px;">
 
 				<div id="mensaje"></div>
@@ -175,7 +175,7 @@
 	                    const dom = new DOMParser();
 	                    const xml = dom.parseFromString(xmlText, 'application/xml');
 
-						const titulo = xml.getElementsByTagName('title')[0].textContent;
+			    const titulo = xml.getElementsByTagName('title')[0].textContent;
 	                    texto = xml.getElementsByTagName('text')[0].textContent;
 	                    
 	                    if ( !titulo || !texto ) {
@@ -185,22 +185,22 @@
 
 	                    } else {
 	                        
-	                        const contenedorForm = document.getElementById('contenedorForm');
-	                        contenedorForm.innerHTML =
+	                        const contenedorEditor = document.getElementById('contenedorEditor');
+	                        contenedorEditor.innerHTML =
 	                            `
 	                                <h2>PÁGINA EDITADA <span class="textos-rojos">EXITOSAMENTE</span></h2>
 	                                <p><strong>Título:</strong> ${titulo}</p>
 	                                <p><strong>Texto:</strong>${texto}</p>
 	                                <div style="justify-content: center;" class="botones">
-										<a href='lista.html?direccion=login&owner=${owner}' class="btn-accion btn-crear">Ver Mi Lista</a>
-									</div>
+					    <a href='lista.html?direccion=login&owner=${owner}' class="btn-accion btn-crear">Ver Mi Lista</a>
+					</div>
 	                            `;
 	                    }
 	                })
 	                .catch(error => {
 	                    console.log("Error al conectar con el CGI:", error);
-	                    const contenedorForm = document.getElementById('contenedorForm');
-	                    contenedorForm.innerHTML = '<p>No se pudo conectar con la página...</p>';
+	                    const contenedorEditor = document.getElementById('contenedorEditor');
+	                    contenedorEditor.innerHTML = '<p>No se pudo conectar con la página...</p>';
 	                })
 	        }
 	    </script>
